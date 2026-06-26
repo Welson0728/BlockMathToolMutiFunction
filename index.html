@@ -234,14 +234,22 @@
 
     .build-btn:disabled,
     .formula-btn:disabled,
-    .speak-btn:disabled {
+    .speak-btn:disabled,
+    .answer-btn:disabled {
       opacity: .42;
       cursor: not-allowed;
       transform: none;
       box-shadow: none;
     }
 
+    .answer-btn:disabled {
+      background: #f4f4f4;
+      color: #999;
+      border-color: #dddddd;
+    }
+
     .formula-btn.hidden,
+    .build-btn.hidden,
     .input-row.hidden,
     .input-error.hidden,
     .category-layer.hidden,
@@ -276,6 +284,28 @@
       text-align: center;
       padding: 3px 6px;
       outline: none;
+    }
+
+    .input-icon-btn {
+      width: 32px;
+      height: 32px;
+      border: 2px solid #222;
+      border-radius: 10px;
+      background: #fff;
+      color: #111;
+      font-size: 17px;
+      font-weight: 900;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      padding: 0;
+      flex: 0 0 auto;
+    }
+
+    .input-icon-btn:active {
+      transform: scale(.98);
     }
 
     .plus-symbol {
@@ -575,7 +605,9 @@
     }
 
     .modal-card {
-      width: min(94vw, 640px);
+      width: min(94vw, 780px);
+      max-height: 92vh;
+      overflow-y: auto;
       background: #fff;
       border-radius: 18px;
       box-shadow: 0 10px 30px rgba(0,0,0,.18);
@@ -648,6 +680,7 @@
 
     .formula-carry {
       color: #666;
+      font-size: clamp(16px, 3.6vw, 22px);
     }
 
     .formula-sign {
@@ -672,6 +705,175 @@
       margin: 8px auto;
       border-top: 3px solid #222;
       width: var(--formula-full-width, min(100%, 372px));
+    }
+
+    .formula-explain {
+      margin-top: 14px;
+      border: 2px solid #ececec;
+      border-radius: 14px;
+      background: #fffdf7;
+      padding: 12px;
+      color: #111;
+      font-weight: 800;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .formula-explain.hidden {
+      display: none;
+    }
+
+    .teaching-panel {
+      margin-top: 8px;
+      padding: 10px 12px;
+      border-radius: 16px;
+      background: #ffffff;
+      border: 2px solid #eeeeee;
+      box-shadow: 0 2px 8px rgba(0,0,0,.04);
+      max-height: 74px;
+      overflow: hidden;
+      transition: max-height .2s ease;
+    }
+
+    .teaching-panel.expanded {
+      max-height: 240px;
+      overflow-y: auto;
+    }
+
+    .teaching-panel.hidden {
+      display: none;
+    }
+
+    .teaching-progress {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 0;
+    }
+
+    .teaching-panel.expanded .teaching-progress {
+      margin-bottom: 10px;
+    }
+
+    .teaching-progress-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #222;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .teaching-status {
+      font-size: 14px;
+      font-weight: 800;
+      color: #333;
+    }
+
+    .teaching-mini-note {
+      margin-top: 8px;
+      font-size: 13px;
+      font-weight: 800;
+      color: #555;
+    }
+
+    .guide-toggle {
+      margin-left: auto;
+      border: 2px solid #dddddd;
+      border-radius: 999px;
+      background: #fafafa;
+      color: #222;
+      font-size: 13px;
+      font-weight: 900;
+      padding: 4px 10px;
+      cursor: pointer;
+    }
+
+    .guide-toggle:active {
+      transform: scale(.98);
+    }
+
+    #checkPracticeBtn,
+    #clearPracticeBtn,
+    #formulaBtn {
+      border-color: #b8b8b8;
+      color: #555;
+      background: #fafafa;
+    }
+
+    #checkPracticeBtn:disabled,
+    #formulaBtn:disabled {
+      border-color: #dddddd;
+      color: #999;
+      background: #f4f4f4;
+    }
+
+    .borrow-step-card.current-step {
+      border: 2px solid #222;
+      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    }
+
+    .explain-title {
+      font-size: 15px;
+      font-weight: 900;
+      margin: 0 0 8px;
+    }
+
+    .explain-note {
+      font-size: 13px;
+      line-height: 1.4;
+      margin-bottom: 10px;
+      color: #444;
+    }
+
+    .easy-rule {
+      background: #f5fbff;
+      border: 2px solid #d8edf8;
+      border-radius: 12px;
+      padding: 8px 10px;
+      margin-bottom: 10px;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .borrow-step-card {
+      background: #fff;
+      border: 2px solid #f0e4c7;
+      border-radius: 12px;
+      padding: 9px 10px;
+      margin: 8px 0;
+      line-height: 1.35;
+      font-size: 13px;
+    }
+
+    .borrow-step-head {
+      font-size: 14px;
+      font-weight: 900;
+      margin-bottom: 4px;
+    }
+
+    .borrow-step-line {
+      margin: 2px 0;
+    }
+
+    .calc-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+      gap: 7px;
+      margin-top: 8px;
+    }
+
+    .calc-chip {
+      background: #fff;
+      border: 2px solid #e7e7e7;
+      border-radius: 10px;
+      padding: 7px 8px;
+      text-align: center;
+      font-size: 13px;
+      line-height: 1.25;
     }
 
     @media (max-width: 700px) {
@@ -851,6 +1053,40 @@
         min-width: 72px;
       }
 
+      .formula-explain {
+        padding: 10px;
+      }
+
+      .teaching-panel {
+        max-height: 78px;
+        padding: 9px 10px;
+      }
+
+      .teaching-panel.expanded {
+        max-height: 210px;
+      }
+
+      .guide-toggle {
+        font-size: 12px;
+        padding: 4px 8px;
+      }
+
+      .teaching-progress-badge,
+      .teaching-status,
+      .teaching-mini-note {
+        font-size: 13px;
+      }
+
+      .borrow-step-card,
+      .calc-chip,
+      .explain-note {
+        font-size: 12px;
+      }
+
+      .explain-title {
+        font-size: 14px;
+      }
+
       .formula-row {
         font-size: clamp(24px, 8vw, 32px);
       }
@@ -886,22 +1122,26 @@
         <select class="mode-select" id="modeSelect" aria-label="Mode">
           <option value="free">Free</option>
           <option value="addition">Addition (+)</option>
+          <option value="subtraction">Subtraction (−)</option>
         </select>
       </div>
 
       <div class="input-row" id="freeInputRow">
         <span class="input-label" id="freeNumberLabel">Number</span>
-        <input class="number-input" id="freeNumberInput" type="number" inputmode="numeric" min="0" max="100000" placeholder="400" />
+        <input class="number-input" id="freeNumberInput" type="number" inputmode="numeric" min="0" max="100000" placeholder="0" />
+        <button class="input-icon-btn" id="clearFreeInputBtn" type="button" aria-label="Clear input" title="Clear input">↺</button>
         <button class="build-btn" id="buildFreeBtn" type="button">Show Blocks</button>
       </div>
 
       <div class="input-row hidden" id="additionInputRow">
         <span class="input-label" id="addFirstLabel">Number 1</span>
-        <input class="number-input" id="addNumberAInput" type="number" inputmode="numeric" min="0" max="100000" placeholder="400" />
-        <span class="plus-symbol">+</span>
+        <input class="number-input" id="addNumberAInput" type="number" inputmode="numeric" min="0" max="100000" placeholder="0" />
+        <span class="plus-symbol" id="operationSymbol">+</span>
         <span class="input-label" id="addSecondLabel">Number 2</span>
-        <input class="number-input" id="addNumberBInput" type="number" inputmode="numeric" min="0" max="100000" placeholder="120" />
+        <input class="number-input" id="addNumberBInput" type="number" inputmode="numeric" min="0" max="100000" placeholder="0" />
+        <button class="input-icon-btn" id="clearAddInputsBtn" type="button" aria-label="Clear inputs" title="Clear inputs">↺</button>
         <button class="build-btn" id="buildAddBtn" type="button">Show Blocks</button>
+        <button class="build-btn hidden" id="regroupBtn" type="button">Step</button>
         <button class="build-btn" id="practiceAddBtn" type="button">Practice</button>
         <button class="build-btn" id="checkPracticeBtn" type="button">Check</button>
         <button class="build-btn" id="clearPracticeBtn" type="button">Clear</button>
@@ -910,6 +1150,7 @@
 
       <div class="question-line hidden" id="questionLine">Question: 0 + 0</div>
       <div class="input-error hidden" id="inputError" role="alert"></div>
+      <div class="teaching-panel hidden" id="teachingPanel"></div>
     </section>
 
     <section class="main-area">
@@ -1009,7 +1250,7 @@
           <div class="formula-digits" id="formulaDigitsA"></div>
         </div>
         <div class="formula-row">
-          <div class="formula-sign">+</div>
+          <div class="formula-sign" id="formulaOperatorSign">+</div>
           <div class="formula-digits" id="formulaDigitsB"></div>
         </div>
         <div class="formula-line" id="formulaLine"></div>
@@ -1018,6 +1259,7 @@
           <div class="formula-digits" id="formulaDigitsSum"></div>
         </div>
       </div>
+      <div class="formula-explain hidden" id="formulaExplain"></div>
     </div>
   </div>
 
@@ -1047,7 +1289,9 @@
     const formulaDigitsA = document.getElementById("formulaDigitsA");
     const formulaDigitsB = document.getElementById("formulaDigitsB");
     const formulaDigitsSum = document.getElementById("formulaDigitsSum");
+    const formulaOperatorSign = document.getElementById("formulaOperatorSign");
     const formulaLine = document.getElementById("formulaLine");
+    const formulaExplain = document.getElementById("formulaExplain");
     const resetBtn = document.getElementById("resetBtn");
     const speakBtn = document.getElementById("speakBtn");
     const answerBtn = document.getElementById("answerBtn");
@@ -1058,18 +1302,23 @@
     const freeInputRow = document.getElementById("freeInputRow");
     const additionInputRow = document.getElementById("additionInputRow");
     const freeNumberInput = document.getElementById("freeNumberInput");
+    const clearFreeInputBtn = document.getElementById("clearFreeInputBtn");
     const addNumberAInput = document.getElementById("addNumberAInput");
     const addNumberBInput = document.getElementById("addNumberBInput");
+    const clearAddInputsBtn = document.getElementById("clearAddInputsBtn");
     const buildFreeBtn = document.getElementById("buildFreeBtn");
     const buildAddBtn = document.getElementById("buildAddBtn");
+    const regroupBtn = document.getElementById("regroupBtn");
     const practiceAddBtn = document.getElementById("practiceAddBtn");
     const checkPracticeBtn = document.getElementById("checkPracticeBtn");
     const clearPracticeBtn = document.getElementById("clearPracticeBtn");
     const questionLine = document.getElementById("questionLine");
     const inputError = document.getElementById("inputError");
+    const teachingPanel = document.getElementById("teachingPanel");
     const freeNumberLabel = document.getElementById("freeNumberLabel");
     const addFirstLabel = document.getElementById("addFirstLabel");
     const addSecondLabel = document.getElementById("addSecondLabel");
+    const operationSymbol = document.getElementById("operationSymbol");
 
     let total = 0;
     let currentDrag = null;
@@ -1088,6 +1337,11 @@
     let additionBuilt = false;
     let additionPracticeBuilt = false;
     let additionFreeBuilt = false;
+    let subtractionRegrouped = false;
+    let subtractionStepCounts = null;
+    let subtractionStepIndex = 0;
+    let lastBorrowStepDetail = null;
+    let teachingExpanded = false;
     let additionNumbers = { a: 0, b: 0 };
 
     const languageData = {
@@ -1103,9 +1357,9 @@
     };
 
     const inputTextData = {
-      en: { mode: "Mode", free: "Free", addition: "Addition (+)", number: "Number", number1: "Number 1", number2: "Number 2", blocks: "Show Blocks", practice: "Practice", check: "Check", clear: "Clear Blocks", question: "Question" },
-      zh: { mode: "模式", free: "自由", addition: "加法（+）", number: "数字", number1: "第一个数", number2: "第二个数", blocks: "显示方块", practice: "练习", check: "检查", clear: "清空方块", question: "题目" },
-      bm: { mode: "Mod", free: "Bebas", addition: "Tambah (+)", number: "Nombor", number1: "Nombor 1", number2: "Nombor 2", blocks: "Papar Blok", practice: "Latih", check: "Semak", clear: "Kosongkan Blok", question: "Soalan" }
+      en: { mode: "Mode", free: "Free", addition: "Addition (+)", subtraction: "Subtraction (−)", number: "Number", number1: "Number 1", number2: "Number 2", blocks: "Show Blocks", regroup: "Step", practice: "Practice", check: "Check", clear: "Clear Blocks", question: "Question", clearInput: "Clear input" },
+      zh: { mode: "模式", free: "自由", addition: "加法（+）", subtraction: "减法（−）", number: "数字", number1: "第一个数", number2: "第二个数", blocks: "显示方块", regroup: "步骤", practice: "练习", check: "检查", clear: "清空方块", question: "题目", clearInput: "清空输入" },
+      bm: { mode: "Mod", free: "Bebas", addition: "Tambah (+)", subtraction: "Tolak (−)", number: "Nombor", number1: "Nombor 1", number2: "Nombor 2", blocks: "Papar Blok", regroup: "Langkah", practice: "Latih", check: "Semak", clear: "Kosongkan Blok", question: "Soalan", clearInput: "Kosongkan input" }
     };
 
     const errorTextData = {
@@ -1113,6 +1367,8 @@
         range: "This tool only supports numbers from 0 to 100000.",
         freeTotal: "The total is more than 100000. Please use smaller numbers.",
         total: "The answer is more than 200000. Please use smaller numbers.",
+        subtractOrder: "Number 1 must be greater than or equal to Number 2.",
+        regroup: "Please press Step until the regrouping is complete before showing the answer.",
         correct: "Correct!",
         tryAgain: "Wrong answer, please try again."
       },
@@ -1120,6 +1376,8 @@
         range: "这个工具只支持 0 到 100000 的数字。",
         freeTotal: "总数超过 100000，请输入小一点的数字。",
         total: "答案超过 200000，请输入小一点的数字。",
+        subtractOrder: "第一个数必须大过或等于第二个数。",
+        regroup: "请先按步骤，完成换位后再显示答案。",
         correct: "正确！",
         tryAgain: "答案错误，请重新尝试。"
       },
@@ -1127,6 +1385,8 @@
         range: "Alat ini hanya menyokong nombor dari 0 hingga 100000.",
         freeTotal: "Jumlah melebihi 100000. Sila gunakan nombor yang lebih kecil.",
         total: "Jawapan melebihi 200000. Sila gunakan nombor yang lebih kecil.",
+        subtractOrder: "Nombor 1 mesti lebih besar atau sama dengan Nombor 2.",
+        regroup: "Sila tekan Langkah sehingga kumpul semula selesai sebelum memaparkan jawapan.",
         correct: "Betul!",
         tryAgain: "Jawapan salah, sila cuba lagi."
       }
@@ -1139,9 +1399,105 @@
     };
 
     const formulaTextData = {
-      en: { title: "formula", groupA: "number 1", groupB: "number 2", total: "total", pv: ["thousand", "hundred", "ten", "one"] },
-      zh: { title: "直式", groupA: "第一个数", groupB: "第二个数", total: "总数", pv: ["千", "百", "十", "个"] },
-      bm: { title: "bentuk", groupA: "nombor 1", groupB: "nombor 2", total: "jumlah", pv: ["ribu", "ratus", "puluh", "sa"] }
+      en: { title: "formula", groupA: "number 1", groupB: "number 2", total: "total", answer: "answer", pv: ["thousand", "hundred", "ten", "one"] },
+      zh: { title: "直式", groupA: "第一个数", groupB: "第二个数", total: "总数", answer: "答案", pv: ["千", "百", "十", "个"] },
+      bm: { title: "bentuk", groupA: "nombor 1", groupB: "nombor 2", total: "jumlah", answer: "jawapan", pv: ["ribu", "ratus", "puluh", "sa"] }
+    };
+
+    const teachingTextData = {
+      en: {
+        additionTitle: "Addition steps",
+        additionRule: "Start from the right. If the answer is 10 or more, write the ones digit and carry 1 to the next place.",
+        subtractionTitle: "Subtraction steps",
+        subtractionRule: "Start from the right. If the top number is smaller, borrow 1 from the place on the left.",
+        noBorrow: "No borrowing is needed. Subtract from right to left.",
+        finalTitle: "Now calculate",
+        step: "Step",
+        addNoCarry: (place, top, bottom, answer) => `${place}: ${top} + ${bottom} = ${answer}. Write ${answer}.`,
+        addWithCarryIn: (place, top, bottom, carry, total) => `${place}: ${top} + ${bottom} + carry ${carry} = ${total}.`,
+        addCarry: (write, leftPlace) => `Write ${write}. Carry 1 to ${leftPlace}.`,
+        addNoMoreCarry: write => `Write ${write}.`,
+        subNormal: (place, top, bottom, answer) => `${place}: ${top} − ${bottom} = ${answer}.`,
+        subNeedBorrow: (place, top, bottom) => `${place}: ${top} is smaller than ${bottom}, so we borrow.`,
+        subBorrow: (source, target) => `Take 1 ${source} and change it into 10 ${target}.`,
+        subChange: (source, beforeSource, afterSource, target, beforeTarget, afterTarget) => `${source}: ${beforeSource} becomes ${afterSource}. ${target}: ${beforeTarget} becomes ${afterTarget}.`,
+        subAfterBorrow: (place, top, bottom, answer) => `Now ${place}: ${top} − ${bottom} = ${answer}.`,
+        formulaCarryNote: "The grey row shows the carry.",
+        formulaBorrowNote: "The grey row shows the top number after borrowing.",
+        pressAnswer: "Press Answer to see the final answer.",
+        pressFormula: "Press Formula to see the vertical method.",
+        pressStep: total => `Step 0/${total}: Look at the original blocks first. Then press Step to start borrowing.`,
+        stepDone: (current, total) => `Step ${current} of ${total} is done. Look at the blocks, then press Step again.`,
+        borrowDone: "Borrowing is complete. Now press Answer.",
+        statusLabel: "Guide",
+        showGuide: "Show guide",
+        hideGuide: "Hide guide",
+        guideCollapsedNote: "Open the guide only when you need the steps."
+      },
+      zh: {
+        additionTitle: "加法步骤",
+        additionRule: "从右边开始算。如果加起来是 10 或以上，写个位数，把 1 进到左边。",
+        subtractionTitle: "减法步骤",
+        subtractionRule: "从右边开始算。如果上面的数比较小，就向左边借 1。",
+        noBorrow: "这题不用借位，直接从右边开始减。",
+        finalTitle: "现在开始算",
+        step: "步骤",
+        addNoCarry: (place, top, bottom, answer) => `${place}：${top} + ${bottom} = ${answer}，写 ${answer}。`,
+        addWithCarryIn: (place, top, bottom, carry, total) => `${place}：${top} + ${bottom} + 进位 ${carry} = ${total}。`,
+        addCarry: (write, leftPlace) => `写 ${write}，把 1 进到${leftPlace}。`,
+        addNoMoreCarry: write => `写 ${write}。`,
+        subNormal: (place, top, bottom, answer) => `${place}：${top} − ${bottom} = ${answer}。`,
+        subNeedBorrow: (place, top, bottom) => `${place}：${top} 比 ${bottom} 小，所以要借位。`,
+        subBorrow: (source, target) => `从${source}借 1，换成 10 个${target}。`,
+        subChange: (source, beforeSource, afterSource, target, beforeTarget, afterTarget) => `${source}：${beforeSource} 变成 ${afterSource}。${target}：${beforeTarget} 变成 ${afterTarget}。`,
+        subAfterBorrow: (place, top, bottom, answer) => `现在${place}：${top} − ${bottom} = ${answer}。`,
+        formulaCarryNote: "灰色一行表示进位。",
+        formulaBorrowNote: "灰色一行表示借位后的上面数字。",
+        pressAnswer: "按答案，查看最后答案。",
+        pressFormula: "按直式，查看直式做法。",
+        pressStep: total => `步骤 0/${total}：先看原本的方块，然后按步骤开始借位。`,
+        stepDone: (current, total) => `已完成第 ${current} / ${total} 步。请先看方块变化，再按下一步。`,
+        borrowDone: "借位已经完成。现在可以按答案。",
+        statusLabel: "学习提示",
+        showGuide: "展开讲解",
+        hideGuide: "收起讲解",
+        guideCollapsedNote: "需要看步骤时，再展开讲解。"
+      },
+      bm: {
+        additionTitle: "Langkah tambah",
+        additionRule: "Mula dari kanan. Jika jumlah 10 atau lebih, tulis digit sa dan bawa 1 ke nilai tempat sebelah kiri.",
+        subtractionTitle: "Langkah tolak",
+        subtractionRule: "Mula dari kanan. Jika nombor atas lebih kecil, pinjam 1 daripada nilai tempat sebelah kiri.",
+        noBorrow: "Soalan ini tidak perlu pinjam. Tolak dari kanan ke kiri.",
+        finalTitle: "Sekarang kira",
+        step: "Langkah",
+        addNoCarry: (place, top, bottom, answer) => `${place}: ${top} + ${bottom} = ${answer}. Tulis ${answer}.`,
+        addWithCarryIn: (place, top, bottom, carry, total) => `${place}: ${top} + ${bottom} + bawa ${carry} = ${total}.`,
+        addCarry: (write, leftPlace) => `Tulis ${write}. Bawa 1 ke ${leftPlace}.`,
+        addNoMoreCarry: write => `Tulis ${write}.`,
+        subNormal: (place, top, bottom, answer) => `${place}: ${top} − ${bottom} = ${answer}.`,
+        subNeedBorrow: (place, top, bottom) => `${place}: ${top} lebih kecil daripada ${bottom}, jadi perlu pinjam.`,
+        subBorrow: (source, target) => `Pinjam 1 ${source} dan tukar menjadi 10 ${target}.`,
+        subChange: (source, beforeSource, afterSource, target, beforeTarget, afterTarget) => `${source}: ${beforeSource} menjadi ${afterSource}. ${target}: ${beforeTarget} menjadi ${afterTarget}.`,
+        subAfterBorrow: (place, top, bottom, answer) => `Sekarang ${place}: ${top} − ${bottom} = ${answer}.`,
+        formulaCarryNote: "Baris kelabu menunjukkan bawa.",
+        formulaBorrowNote: "Baris kelabu menunjukkan nombor atas selepas pinjam.",
+        pressAnswer: "Tekan Jawapan untuk melihat jawapan akhir.",
+        pressFormula: "Tekan Bentuk untuk melihat bentuk menegak.",
+        pressStep: total => `Langkah 0/${total}: Lihat blok asal dahulu. Kemudian tekan Langkah untuk mula pinjam.`,
+        stepDone: (current, total) => `Langkah ${current} daripada ${total} sudah siap. Lihat perubahan blok, kemudian tekan Langkah lagi.`,
+        borrowDone: "Proses pinjam sudah selesai. Sekarang boleh tekan Jawapan.",
+        statusLabel: "Panduan",
+        showGuide: "Papar panduan",
+        hideGuide: "Sembunyi panduan",
+        guideCollapsedNote: "Buka panduan hanya apabila perlu melihat langkah."
+      }
+    };
+
+    const teachingPlaceLabels = {
+      en: { one: "ones", ten: "tens", hundred: "hundreds", thousand: "thousands" },
+      zh: { one: "个位", ten: "十位", hundred: "百位", thousand: "千位" },
+      bm: { one: "sa", ten: "puluh", hundred: "ratus", thousand: "ribu" }
     };
 
     const blockOriginalSize = {
@@ -1154,19 +1510,34 @@
     languageSelect.addEventListener("change", () => setLanguage(languageSelect.value));
     modeSelect.addEventListener("change", () => setMode(modeSelect.value));
     buildFreeBtn.addEventListener("click", buildBlocksFromFreeInput);
+    clearFreeInputBtn.addEventListener("click", () => clearSpecificInput("free"));
     buildAddBtn.addEventListener("click", buildBlocksFromAdditionInput);
+    regroupBtn.addEventListener("click", regroupSubtraction);
+    clearAddInputsBtn.addEventListener("click", () => clearSpecificInput("ab"));
     practiceAddBtn.addEventListener("click", buildPracticeFromAdditionInput);
     checkPracticeBtn.addEventListener("click", checkPracticeAnswer);
     clearPracticeBtn.addEventListener("click", clearPracticeBlocksButton);
     formulaBtn.addEventListener("click", openFormulaModal);
     formulaCloseBtn.addEventListener("click", closeFormulaModal);
     formulaModal.addEventListener("click", e => { if (e.target === formulaModal) closeFormulaModal(); });
+    teachingPanel.addEventListener("click", e => {
+      if (!e.target.closest("[data-guide-toggle]")) return;
+      teachingExpanded = !teachingExpanded;
+      updateTeachingPanel();
+    });
 
     [freeNumberInput, addNumberAInput, addNumberBInput].forEach(input => {
       input.addEventListener("keydown", event => {
         if (event.key !== "Enter") return;
-        if (currentMode === "addition") buildBlocksFromAdditionInput();
+        if (isOperationMode()) buildBlocksFromAdditionInput();
         else buildBlocksFromFreeInput();
+      });
+    });
+
+    [addNumberAInput, addNumberBInput].forEach(input => {
+      input.addEventListener("input", () => {
+        if (!isOperationMode()) return;
+        updateAdditionButtonStates();
       });
     });
 
@@ -1199,14 +1570,22 @@
       modeLabel.textContent = text.mode;
       modeSelect.options[0].textContent = text.free;
       modeSelect.options[1].textContent = text.addition;
+      modeSelect.options[2].textContent = text.subtraction;
+      operationSymbol.textContent = getOperationSymbol();
       freeNumberLabel.textContent = text.number;
       addFirstLabel.textContent = text.number1;
       addSecondLabel.textContent = text.number2;
       buildFreeBtn.textContent = text.blocks;
       buildAddBtn.textContent = text.blocks;
+      regroupBtn.textContent = text.regroup;
+      updateRegroupButtonLabel();
       practiceAddBtn.textContent = text.practice;
       checkPracticeBtn.textContent = text.check;
       clearPracticeBtn.textContent = text.clear;
+      clearFreeInputBtn.setAttribute("aria-label", text.clearInput);
+      clearFreeInputBtn.setAttribute("title", text.clearInput);
+      clearAddInputsBtn.setAttribute("aria-label", text.clearInput);
+      clearAddInputsBtn.setAttribute("title", text.clearInput);
       updateQuestionLine();
     }
 
@@ -1216,22 +1595,245 @@
       additionBoxes.forEach(box => box.querySelector(".add-box-title").textContent = labels[box.dataset.category]);
     }
 
+    function isOperationMode() {
+      return currentMode === "addition" || currentMode === "subtraction";
+    }
+
+    function getOperationSymbol() {
+      return currentMode === "subtraction" ? "−" : "+";
+    }
+
+    function getOperationResult() {
+      const a = Math.max(0, Math.floor(additionNumbers.a || 0));
+      const b = Math.max(0, Math.floor(additionNumbers.b || 0));
+      return currentMode === "subtraction" ? Math.max(0, a - b) : a + b;
+    }
+
+    function requiresRegroup(numberA, numberB) {
+      let a = Math.max(0, Math.floor(numberA || 0));
+      let b = Math.max(0, Math.floor(numberB || 0));
+      while (a > 0 || b > 0) {
+        if ((a % 10) < (b % 10)) return true;
+        a = Math.floor(a / 10);
+        b = Math.floor(b / 10);
+      }
+      return false;
+    }
+
+    function validateOperationNumbers(numberA, numberB) {
+      if (currentMode === "addition") return validateAdditionTotal(numberA, numberB);
+      if (currentMode === "subtraction") {
+        if (numberA < numberB) {
+          showInputError("subtractOrder");
+          return false;
+        }
+      }
+      return true;
+    }
+
+    function needsSubtractionRegroup() {
+      return currentMode === "subtraction" &&
+        additionNumbers.a >= additionNumbers.b &&
+        requiresRegroup(additionNumbers.a, additionNumbers.b);
+    }
+
+    function canShowSubtractionAnswerNow() {
+      if (currentMode !== "subtraction") return true;
+      if (!validateOperationNumbers(additionNumbers.a, additionNumbers.b)) return false;
+      if (needsSubtractionRegroup() && !subtractionRegrouped) {
+        showInputError("regroup");
+        updateAdditionButtonStates();
+        return false;
+      }
+      return true;
+    }
+
+    function borrowToPlace(counts, index, order) {
+      if (index >= order.length - 1) return false;
+      const higher = order[index + 1];
+
+      if (counts[higher] <= 0) {
+        if (!borrowToPlace(counts, index + 1, order)) return false;
+      }
+
+      counts[higher] -= 1;
+      counts[order[index]] += 10;
+      return true;
+    }
+
+    function getRegroupedCountsForSubtraction(numberA, numberB) {
+      const counts = getExpectedCounts(numberA);
+      const subtractCounts = getExpectedCounts(numberB);
+      const order = ["one", "ten", "hundred", "thousand"];
+
+      for (let i = 0; i < order.length - 1; i++) {
+        const place = order[i];
+        if (counts[place] < subtractCounts[place]) {
+          borrowToPlace(counts, i, order);
+        }
+      }
+
+      return counts;
+    }
+
+    function createBlocksFromCounts(counts, group) {
+      const valueMap = { thousand: 1000, hundred: 100, ten: 10, one: 1 };
+      ["thousand", "hundred", "ten", "one"].forEach(type => {
+        for (let i = 0; i < (counts[type] || 0); i++) {
+          const block = createBlockElement(type, valueMap[type], group);
+          block.dataset.placeCategory = type;
+          total += valueMap[type];
+        }
+      });
+    }
+
+    function hasPendingBorrowFromCounts(counts, subtractCounts) {
+      const order = ["one", "ten", "hundred", "thousand"];
+      for (let i = 0; i < order.length - 1; i++) {
+        const place = order[i];
+        if ((counts[place] || 0) < (subtractCounts[place] || 0)) return true;
+      }
+      return false;
+    }
+
+    function doOneBorrowStep(counts, subtractCounts) {
+      const order = ["one", "ten", "hundred", "thousand"];
+
+      for (let i = 0; i < order.length - 1; i++) {
+        const neededPlace = order[i];
+        if ((counts[neededPlace] || 0) >= (subtractCounts[neededPlace] || 0)) continue;
+
+        let sourceIndex = i + 1;
+        while (sourceIndex < order.length && (counts[order[sourceIndex]] || 0) <= 0) {
+          sourceIndex++;
+        }
+        if (sourceIndex >= order.length) return null;
+
+        const sourcePlace = order[sourceIndex];
+        const targetPlace = order[sourceIndex - 1];
+        const beforeNeeded = counts[neededPlace] || 0;
+        const beforeSource = counts[sourcePlace] || 0;
+        const beforeTarget = counts[targetPlace] || 0;
+        const subtractValue = subtractCounts[neededPlace] || 0;
+
+        counts[sourcePlace] -= 1;
+        counts[targetPlace] = (counts[targetPlace] || 0) + 10;
+
+        return {
+          neededPlace,
+          sourcePlace,
+          targetPlace,
+          beforeNeeded,
+          beforeSource,
+          afterSource: counts[sourcePlace],
+          beforeTarget,
+          afterTarget: counts[targetPlace],
+          subtractValue
+        };
+      }
+
+      return null;
+    }
+
+    function rebuildSubtractionBlocksForStep() {
+      stopAllAudio();
+      closeFormulaModal();
+      clearBlocks();
+
+      createBlocksFromCounts(subtractionStepCounts || getExpectedCounts(additionNumbers.a), "A");
+      createBlocksFromCounts(getExpectedCounts(additionNumbers.b), "B");
+
+      additionBuilt = true;
+      additionPracticeBuilt = false;
+      additionFreeBuilt = false;
+      practiceAddBtn.classList.remove("selected");
+      hideAnswer();
+      updateAdditionLabels();
+      updateFormulaView();
+      updateAdditionButtonStates();
+      updateDisplay();
+      updateWorkspaceLayout();
+    }
+
+    function buildRegroupedSubtractionBlocks() {
+      stopAllAudio();
+      closeFormulaModal();
+      clearBlocks();
+
+      const regroupedA = getRegroupedCountsForSubtraction(additionNumbers.a, additionNumbers.b);
+      const normalB = getExpectedCounts(additionNumbers.b);
+
+      createBlocksFromCounts(regroupedA, "A");
+      createBlocksFromCounts(normalB, "B");
+
+      additionBuilt = true;
+      additionPracticeBuilt = false;
+      additionFreeBuilt = false;
+      subtractionRegrouped = true;
+      practiceAddBtn.classList.remove("selected");
+      hideAnswer();
+      updateAdditionLabels();
+      updateFormulaView();
+      updateAdditionButtonStates();
+      updateDisplay();
+      updateWorkspaceLayout();
+    }
+
+    function regroupSubtraction() {
+      if (currentMode !== "subtraction") return;
+
+      if (additionFreeBuilt) syncAdditionNumbersFromBlocks();
+
+      if (!validateOperationNumbers(additionNumbers.a, additionNumbers.b)) return;
+      clearInputError();
+
+      if (!needsSubtractionRegroup()) {
+        subtractionRegrouped = true;
+        subtractionStepCounts = null;
+        subtractionStepIndex = 0;
+        lastBorrowStepDetail = null;
+      teachingExpanded = false;
+        updateAdditionButtonStates();
+        updateDisplay();
+        return;
+      }
+
+      if (!subtractionStepCounts) {
+        subtractionStepCounts = getExpectedCounts(additionNumbers.a);
+      }
+
+      const subtractCounts = getExpectedCounts(additionNumbers.b);
+      const stepDetail = doOneBorrowStep(subtractionStepCounts, subtractCounts);
+
+      if (!stepDetail) {
+        subtractionRegrouped = true;
+        updateAdditionButtonStates();
+        updateDisplay();
+        return;
+      }
+
+      subtractionStepIndex += 1;
+      lastBorrowStepDetail = stepDetail;
+      subtractionRegrouped = !hasPendingBorrowFromCounts(subtractionStepCounts, subtractCounts);
+      rebuildSubtractionBlocksForStep();
+    }
+
     function updateAdditionLabels() {
       const text = formulaTextData[currentLang];
       groupALabel.textContent = text.groupA;
       groupBLabel.textContent = text.groupB;
-      groupTLabel.textContent = text.total;
+      groupTLabel.textContent = currentMode === "subtraction" ? text.answer : text.total;
       groupAValue.innerHTML = `<span class="add-group-prefix"></span><span>${additionNumbers.a}</span>`;
-      groupBValue.innerHTML = `<span class="add-group-prefix">+</span><span>${additionNumbers.b}</span>`;
-      groupTValue.innerHTML = `<span class="add-group-prefix">=</span><span>${(additionNumbers.a || 0) + (additionNumbers.b || 0)}</span>`;
+      groupBValue.innerHTML = `<span class="add-group-prefix">${getOperationSymbol()}</span><span>${additionNumbers.b}</span>`;
+      groupTValue.innerHTML = `<span class="add-group-prefix">=</span><span>${getOperationResult()}</span>`;
       updateQuestionLine();
       updateAdditionButtonStates();
     }
 
     function updateQuestionLine() {
-      const hasQuestion = currentMode === "addition" && (additionBuilt || additionPracticeBuilt);
+      const hasQuestion = isOperationMode() && (additionBuilt || additionPracticeBuilt);
       const text = inputTextData[currentLang];
-      questionLine.textContent = `${text.question}: ${additionNumbers.a} + ${additionNumbers.b}`;
+      questionLine.textContent = `${text.question}: ${additionNumbers.a} ${getOperationSymbol()} ${additionNumbers.b}`;
       questionLine.classList.toggle("hidden", !hasQuestion);
     }
 
@@ -1239,8 +1841,52 @@
       return placedBlocks.some(block => block.dataset.group !== "T");
     }
 
+    function hasOperationQuestionInputs() {
+      return addNumberAInput.value.trim() !== "" && addNumberBInput.value.trim() !== "";
+    }
+
+    function clearOperationQuestionInputs() {
+      addNumberAInput.value = "";
+      addNumberBInput.value = "";
+    }
+
+    function switchOperationBuiltToFreeDrag() {
+      closeFormulaModal();
+      clearTotalAnswerBlocks();
+      clearOperationQuestionInputs();
+      additionBuilt = false;
+      additionPracticeBuilt = false;
+      additionFreeBuilt = true;
+      subtractionRegrouped = false;
+      subtractionStepCounts = null;
+      subtractionStepIndex = 0;
+      lastBorrowStepDetail = null;
+      teachingExpanded = false;
+      practiceAddBtn.classList.remove("selected");
+      answerVisible = false;
+      display.classList.add("hidden");
+      wordDisplay.classList.add("hidden");
+      speakBtn.disabled = true;
+      clearInputError();
+      syncAdditionNumbersFromBlocks();
+      updateAdditionLabels();
+      updateFormulaView();
+      updateQuestionLine();
+      updateAdditionButtonStates();
+      updateWorkspaceLayout();
+      updateDisplay();
+    }
+
+    function shouldDisableAnswerForSubtractionStep() {
+      if (currentMode !== "subtraction") return false;
+      if (!(additionBuilt || additionFreeBuilt)) return false;
+      if (!hasStudentBlocksInWorkspace()) return false;
+      if (additionNumbers.a < additionNumbers.b) return false;
+      return needsSubtractionRegroup() && !subtractionRegrouped;
+    }
+
     function updateAdditionButtonStates() {
-      const isAdditionMode = currentMode === "addition";
+      const isAdditionMode = isOperationMode();
       const isPractice = isAdditionMode && additionPracticeBuilt;
       const hasAdditionWork = isAdditionMode && (additionBuilt || additionPracticeBuilt || additionFreeBuilt);
       const canClearStudentBlocks = isAdditionMode && hasStudentBlocksInWorkspace();
@@ -1250,10 +1896,23 @@
       // hideAnswer() runs and Formula becomes grey again.
       const formulaReady = hasAdditionWork && answerVisible;
 
+      const canRegroup =
+        currentMode === "subtraction" &&
+        (additionBuilt || additionFreeBuilt) &&
+        hasStudentBlocksInWorkspace() &&
+        needsSubtractionRegroup() &&
+        !subtractionRegrouped;
+
+      buildAddBtn.disabled = isAdditionMode && !hasOperationQuestionInputs();
+      practiceAddBtn.disabled = isAdditionMode && !hasOperationQuestionInputs();
+      regroupBtn.classList.toggle("hidden", currentMode !== "subtraction");
+      regroupBtn.disabled = !canRegroup;
       formulaBtn.disabled = !formulaReady;
       checkPracticeBtn.disabled = !isPractice;
       clearPracticeBtn.disabled = !canClearStudentBlocks;
       resetBtn.style.display = isAdditionMode ? "none" : "inline-flex";
+      answerBtn.disabled = shouldDisableAnswerForSubtractionStep();
+      updateRegroupButtonLabel();
     }
 
     function getGroupBlockTotal(group) {
@@ -1263,7 +1922,7 @@
     }
 
     function syncAdditionNumbersFromBlocks() {
-      if (!(currentMode === "addition" && additionFreeBuilt)) return;
+      if (!(isOperationMode() && additionFreeBuilt)) return;
       additionNumbers = {
         a: getGroupBlockTotal("A"),
         b: getGroupBlockTotal("B")
@@ -1272,23 +1931,30 @@
     }
 
     function updateFormulaView() {
-      if (currentMode === "addition" && additionFreeBuilt) {
+      if (isOperationMode() && additionFreeBuilt) {
         syncAdditionNumbersFromBlocks();
       }
 
       const text = formulaTextData[currentLang];
       const a = Math.max(0, Math.floor(additionNumbers.a || 0));
       const b = Math.max(0, Math.floor(additionNumbers.b || 0));
-      const sum = a + b;
-      const length = Math.max(String(a).length, String(b).length, String(sum).length, 1);
+      const result = getOperationResult();
+      const length = Math.max(String(a).length, String(b).length, String(result).length, 1);
 
       formulaTitle.textContent = text.title;
+      formulaOperatorSign.textContent = getOperationSymbol();
       formulaPvLabels.innerHTML = getPlaceValueLabels(length, currentLang).map(item => `<div>${item}</div>`).join("");
       setFormulaColumnLayout(length);
-      renderFormulaDigits(formulaCarryDigits, getCarryDigits(a, b, length), false);
+
+      const topHelperDigits = currentMode === "addition"
+        ? getCarryDigits(a, b, length)
+        : getSubtractionBorrowDigits(a, b, length);
+
+      renderFormulaDigits(formulaCarryDigits, topHelperDigits, currentMode === "subtraction");
       renderFormulaDigits(formulaDigitsA, padDigits(a, length), true);
       renderFormulaDigits(formulaDigitsB, padDigits(b, length), true);
-      renderFormulaDigits(formulaDigitsSum, padDigits(sum, length), true);
+      renderFormulaDigits(formulaDigitsSum, padDigits(result, length), true);
+      updateFormulaExplanation(a, b, result, length, topHelperDigits);
     }
 
     function setFormulaColumnLayout(length) {
@@ -1332,6 +1998,333 @@
       return carryRow;
     }
 
+    function getPlaceLabelByType(type) {
+      return (teachingPlaceLabels[currentLang] || teachingPlaceLabels.en)[type] || type;
+    }
+
+    function getTypeForFormulaIndex(index, length) {
+      const order = ["one", "ten", "hundred", "thousand", "ten-thousand", "hundred-thousand"];
+      const positionFromRight = length - 1 - index;
+      return order[positionFromRight] || "";
+    }
+
+    function getSubtractionBorrowTeachingSteps(a, b) {
+      const order = ["one", "ten", "hundred", "thousand"];
+      const counts = getExpectedCounts(a);
+      const subtractCounts = getExpectedCounts(b);
+      const steps = [];
+      let guard = 0;
+
+      function firstInsufficientIndex() {
+        for (let i = 0; i < order.length - 1; i++) {
+          if ((counts[order[i]] || 0) < (subtractCounts[order[i]] || 0)) return i;
+        }
+        return -1;
+      }
+
+      let neededIndex = firstInsufficientIndex();
+      while (neededIndex !== -1 && guard < 12) {
+        guard++;
+
+        let sourceIndex = neededIndex + 1;
+        while (sourceIndex < order.length && (counts[order[sourceIndex]] || 0) <= 0) {
+          sourceIndex++;
+        }
+        if (sourceIndex >= order.length) break;
+
+        const source = order[sourceIndex];
+        const target = order[sourceIndex - 1];
+        const needed = order[neededIndex];
+        const beforeSource = counts[source] || 0;
+        const beforeTarget = counts[target] || 0;
+        const beforeNeeded = counts[needed] || 0;
+
+        counts[source] = beforeSource - 1;
+        counts[target] = beforeTarget + 10;
+
+        steps.push({
+          needed,
+          source,
+          target,
+          beforeNeeded,
+          beforeSource,
+          afterSource: counts[source],
+          beforeTarget,
+          afterTarget: counts[target]
+        });
+
+        neededIndex = firstInsufficientIndex();
+      }
+
+      return steps;
+    }
+
+    function getWorkingTopDigitsForSubtraction(a, b, length, topHelperDigits) {
+      const hasBorrowRow = topHelperDigits.some(item => String(item || "") !== "");
+      return hasBorrowRow ? topHelperDigits.map(item => Number(item || 0)) : padDigits(a, length).map(Number);
+    }
+
+    function getRegroupStepText(totalSteps) {
+      const text = teachingTextData[currentLang] || teachingTextData.en;
+      if (!totalSteps) return "";
+      if (subtractionStepIndex === 0) return text.pressStep(totalSteps);
+      if (subtractionRegrouped) return text.borrowDone;
+      return text.stepDone(subtractionStepIndex, totalSteps);
+    }
+
+    function updateRegroupButtonLabel() {
+      const text = inputTextData[currentLang];
+      const totalSteps = isOperationMode() && currentMode === "subtraction"
+        ? getSubtractionBorrowTeachingSteps(additionNumbers.a, additionNumbers.b).length
+        : 0;
+      if (!totalSteps) {
+        regroupBtn.textContent = text.regroup;
+        return;
+      }
+      const currentStep = subtractionRegrouped ? totalSteps : Math.min(subtractionStepIndex, totalSteps);
+      regroupBtn.textContent = `${text.regroup} ${currentStep}/${totalSteps}`;
+    }
+
+    function updateTeachingPanel() {
+      const hasGuide = isOperationMode() && (additionBuilt || additionPracticeBuilt || additionFreeBuilt);
+      if (!hasGuide) {
+        teachingPanel.classList.add("hidden");
+        teachingPanel.classList.remove("expanded");
+        teachingPanel.innerHTML = "";
+        return;
+      }
+
+      const text = teachingTextData[currentLang] || teachingTextData.en;
+      const a = Math.max(0, Math.floor(additionNumbers.a || 0));
+      const b = Math.max(0, Math.floor(additionNumbers.b || 0));
+      const result = getOperationResult();
+      const length = Math.max(String(a).length, String(b).length, String(result).length, 1);
+      const topDigitsOriginal = padDigits(a, length).map(Number);
+      const bottomDigits = padDigits(b, length).map(Number);
+      const answerDigits = padDigits(result, length).map(Number);
+      let status = "";
+      let detailsHtml = "";
+
+      if (currentMode === "addition") {
+        status = text.additionRule;
+        let carry = 0;
+        const steps = [];
+
+        for (let i = length - 1; i >= 0; i--) {
+          const place = getPlaceLabelByType(getTypeForFormulaIndex(i, length));
+          const leftPlace = i > 0 ? getPlaceLabelByType(getTypeForFormulaIndex(i - 1, length)) : "";
+          const top = topDigitsOriginal[i];
+          const bottom = bottomDigits[i];
+          const totalHere = top + bottom + carry;
+          const writeDigit = totalHere % 10;
+          const nextCarry = Math.floor(totalHere / 10);
+          const firstLine = carry > 0
+            ? text.addWithCarryIn(place, top, bottom, carry, totalHere)
+            : text.addNoCarry(place, top, bottom, totalHere);
+          const secondLine = nextCarry > 0 && leftPlace
+            ? text.addCarry(writeDigit, leftPlace)
+            : text.addNoMoreCarry(writeDigit);
+
+          steps.push(`
+            <div class="borrow-step-card">
+              <div class="borrow-step-head">${text.step} ${steps.length + 1}: ${place}</div>
+              <div class="borrow-step-line">${firstLine}</div>
+              <div class="borrow-step-line">${secondLine}</div>
+            </div>
+          `);
+
+          carry = nextCarry;
+        }
+
+        detailsHtml = `
+          ${steps.join("")}
+          <div class="teaching-mini-note">${answerVisible ? text.pressFormula : text.pressAnswer}</div>
+        `;
+      } else {
+        const borrowSteps = getSubtractionBorrowTeachingSteps(a, b);
+        status = borrowSteps.length ? getRegroupStepText(borrowSteps.length) : text.noBorrow;
+
+        if (borrowSteps.length) {
+          detailsHtml += borrowSteps.map((step, index) => {
+            const place = getPlaceLabelByType(step.needed);
+            const source = getPlaceLabelByType(step.source);
+            const target = getPlaceLabelByType(step.target);
+            const subtractValue = getExpectedCounts(b)[step.needed] || 0;
+            const currentTopAfterStep = step.needed === step.target ? step.afterTarget : step.beforeNeeded;
+            const currentAnswerAfterStep = currentTopAfterStep - subtractValue;
+            const highlightIndex = subtractionStepIndex > 0 ? Math.min(subtractionStepIndex - 1, borrowSteps.length - 1) : -1;
+            const currentClass = index === highlightIndex ? " current-step" : "";
+
+            return `
+              <div class="borrow-step-card${currentClass}">
+                <div class="borrow-step-head">${text.step} ${index + 1}: ${place}</div>
+                <div class="borrow-step-line">${text.subNeedBorrow(place, step.beforeNeeded || 0, subtractValue)}</div>
+                <div class="borrow-step-line">${text.subBorrow(source, target)}</div>
+                <div class="borrow-step-line">${text.subChange(source, step.beforeSource, step.afterSource, target, step.beforeTarget, step.afterTarget)}</div>
+                ${step.needed === step.target ? `<div class="borrow-step-line">${text.subAfterBorrow(place, currentTopAfterStep, subtractValue, currentAnswerAfterStep)}</div>` : ""}
+              </div>
+            `;
+          }).join("");
+        }
+
+        const topHelperDigits = getSubtractionBorrowDigits(a, b, length);
+        const topDigits = getWorkingTopDigitsForSubtraction(a, b, length, topHelperDigits);
+        const calcHtml = [];
+
+        for (let i = length - 1; i >= 0; i--) {
+          const place = getPlaceLabelByType(getTypeForFormulaIndex(i, length));
+          calcHtml.push(`<div class="calc-chip">${text.subNormal(place, topDigits[i], bottomDigits[i], answerDigits[i])}</div>`);
+        }
+
+        detailsHtml += `
+          <div class="explain-title">${text.finalTitle}</div>
+          <div class="calc-list">${calcHtml.join("")}</div>
+          <div class="teaching-mini-note">${answerVisible ? text.pressFormula : text.pressAnswer}</div>
+        `;
+      }
+
+      const toggleText = teachingExpanded ? text.hideGuide : text.showGuide;
+      const collapsedNote = teachingExpanded ? "" : `<div class="teaching-mini-note">${text.guideCollapsedNote}</div>`;
+
+      teachingPanel.innerHTML = `
+        <div class="teaching-progress">
+          <span class="teaching-progress-badge">${text.statusLabel}</span>
+          <span class="teaching-status">${status}</span>
+          <button class="guide-toggle" type="button" data-guide-toggle>${toggleText}</button>
+        </div>
+        ${collapsedNote}
+        ${teachingExpanded ? `<div class="teaching-details">${detailsHtml}</div>` : ""}
+      `;
+
+      teachingPanel.classList.remove("hidden");
+      teachingPanel.classList.toggle("expanded", teachingExpanded);
+    }
+
+    function updateFormulaExplanation(a, b, result, length, topHelperDigits) {
+      const text = teachingTextData[currentLang] || teachingTextData.en;
+      const topDigitsOriginal = padDigits(a, length).map(Number);
+      const bottomDigits = padDigits(b, length).map(Number);
+      const answerDigits = padDigits(result, length).map(Number);
+
+      if (currentMode === "addition") {
+        let carry = 0;
+        const steps = [];
+
+        for (let i = length - 1; i >= 0; i--) {
+          const place = getPlaceLabelByType(getTypeForFormulaIndex(i, length));
+          const leftPlace = i > 0 ? getPlaceLabelByType(getTypeForFormulaIndex(i - 1, length)) : "";
+          const top = topDigitsOriginal[i];
+          const bottom = bottomDigits[i];
+          const totalHere = top + bottom + carry;
+          const writeDigit = totalHere % 10;
+          const nextCarry = Math.floor(totalHere / 10);
+
+          const firstLine = carry > 0
+            ? text.addWithCarryIn(place, top, bottom, carry, totalHere)
+            : text.addNoCarry(place, top, bottom, totalHere);
+
+          const secondLine = nextCarry > 0 && leftPlace
+            ? text.addCarry(writeDigit, leftPlace)
+            : text.addNoMoreCarry(writeDigit);
+
+          steps.push(`
+            <div class="borrow-step-card">
+              <div class="borrow-step-head">${text.step} ${steps.length + 1}: ${place}</div>
+              <div class="borrow-step-line">${firstLine}</div>
+              <div class="borrow-step-line">${secondLine}</div>
+            </div>
+          `);
+
+          carry = nextCarry;
+        }
+
+        const hasCarryNote = topHelperDigits.some(item => String(item || "") !== "");
+        formulaExplain.innerHTML = `
+          <div class="explain-title">${text.additionTitle}</div>
+          <div class="easy-rule">${text.additionRule}</div>
+          ${hasCarryNote ? `<div class="easy-rule">${text.formulaCarryNote}</div>` : ""}
+          ${steps.join("")}
+        `;
+        formulaExplain.classList.remove("hidden");
+        return;
+      }
+
+      if (currentMode !== "subtraction") {
+        formulaExplain.classList.add("hidden");
+        formulaExplain.innerHTML = "";
+        return;
+      }
+
+      const topDigits = getWorkingTopDigitsForSubtraction(a, b, length, topHelperDigits);
+      const borrowSteps = getSubtractionBorrowTeachingSteps(a, b);
+
+      const borrowHtml = borrowSteps.length
+        ? borrowSteps.map((step, index) => {
+            const place = getPlaceLabelByType(step.needed);
+            const source = getPlaceLabelByType(step.source);
+            const target = getPlaceLabelByType(step.target);
+            const subtractValue = getExpectedCounts(b)[step.needed] || 0;
+            const currentTopAfterStep = step.needed === step.target ? step.afterTarget : step.beforeNeeded;
+            const currentAnswerAfterStep = currentTopAfterStep - subtractValue;
+
+            return `
+              <div class="borrow-step-card">
+                <div class="borrow-step-head">${text.step} ${index + 1}: ${place}</div>
+                <div class="borrow-step-line">${text.subNeedBorrow(place, step.beforeNeeded || 0, subtractValue)}</div>
+                <div class="borrow-step-line">${text.subBorrow(source, target)}</div>
+                <div class="borrow-step-line">${text.subChange(source, step.beforeSource, step.afterSource, target, step.beforeTarget, step.afterTarget)}</div>
+                ${step.needed === step.target ? `<div class="borrow-step-line">${text.subAfterBorrow(place, currentTopAfterStep, subtractValue, currentAnswerAfterStep)}</div>` : ""}
+              </div>
+            `;
+          }).join("")
+        : `<div class="easy-rule">${text.noBorrow}</div>`;
+
+      const calcHtml = [];
+      for (let i = length - 1; i >= 0; i--) {
+        const place = getPlaceLabelByType(getTypeForFormulaIndex(i, length));
+        calcHtml.push(`<div class="calc-chip">${text.subNormal(place, topDigits[i], bottomDigits[i], answerDigits[i])}</div>`);
+      }
+
+      const hasBorrowNote = topHelperDigits.some(item => String(item || "") !== "");
+      formulaExplain.innerHTML = `
+        <div class="explain-title">${text.subtractionTitle}</div>
+        <div class="easy-rule">${text.subtractionRule}</div>
+        ${hasBorrowNote ? `<div class="easy-rule">${text.formulaBorrowNote}</div>` : ""}
+        ${borrowHtml}
+        <div class="explain-title">${text.finalTitle}</div>
+        <div class="calc-list">${calcHtml.join("")}</div>
+      `;
+      formulaExplain.classList.remove("hidden");
+    }
+
+    function getSubtractionBorrowDigits(a, b, length) {
+      if (currentMode !== "subtraction") return Array(length).fill("");
+      if (a < b) return Array(length).fill("");
+
+      const top = padDigits(a, length).map(Number);
+      const bottom = padDigits(b, length).map(Number);
+      const work = [...top];
+      let changed = false;
+
+      for (let i = length - 1; i >= 0; i--) {
+        if (work[i] >= bottom[i]) continue;
+
+        let source = i - 1;
+        while (source >= 0 && work[source] <= 0) source--;
+        if (source < 0) return Array(length).fill("");
+
+        work[source] -= 1;
+        for (let k = source + 1; k < i; k++) {
+          work[k] += 9;
+        }
+        work[i] += 10;
+        changed = true;
+      }
+
+      if (!changed) return Array(length).fill("");
+      return work.map(value => String(value));
+    }
+
     function getPlaceValueLabels(length, lang) {
       const labels = {
         en: ["one", "ten", "hundred", "thousand", "ten thousand", "hundred thousand", "million", "ten million", "hundred million", "billion"],
@@ -1354,7 +2347,7 @@
     }
 
     function openFormulaModal() {
-      if (currentMode !== "addition") return;
+      if (!isOperationMode()) return;
       if (formulaBtn.disabled) return;
       if (!additionBuilt && !additionPracticeBuilt && !additionFreeBuilt) return;
 
@@ -1372,6 +2365,7 @@
       const { preserveBlocks = false } = options;
       const modeChanged = currentMode !== mode;
       currentMode = mode;
+      if (modeChanged) teachingExpanded = false;
 
       if (modeChanged) {
         clearNumberInputs();
@@ -1395,7 +2389,7 @@
           delete block.dataset.group;
           delete block.dataset.placeCategory;
         });
-      } else {
+      } else if (isOperationMode()) {
         if (modeChanged && !preserveBlocks) {
           clearBlocks();
           additionNumbers = { a: 0, b: 0 };
@@ -1410,7 +2404,8 @@
 
       modeSelect.value = mode;
       freeInputRow.classList.toggle("hidden", mode !== "free");
-      additionInputRow.classList.toggle("hidden", mode !== "addition");
+      additionInputRow.classList.toggle("hidden", !isOperationMode());
+      operationSymbol.textContent = getOperationSymbol();
 
       if (!preserveBlocks) hideAnswer();
       else {
@@ -1431,6 +2426,61 @@
       clearInputError();
       updateQuestionLine();
       updateAdditionButtonStates();
+    }
+
+    function clearOperationVisualState() {
+      stopAllAudio();
+      closeFormulaModal();
+      clearBlocks();
+      hideAnswer();
+      additionBuilt = false;
+      additionPracticeBuilt = false;
+      additionFreeBuilt = true;
+      subtractionRegrouped = false;
+      subtractionStepCounts = null;
+      subtractionStepIndex = 0;
+      lastBorrowStepDetail = null;
+      teachingExpanded = false;
+      practiceAddBtn.classList.remove("selected");
+      additionNumbers = {
+        a: getInputNumber(addNumberAInput),
+        b: getInputNumber(addNumberBInput)
+      };
+      clearInputError();
+      updateAdditionLabels();
+      updateFormulaView();
+      updateAdditionButtonStates();
+      updateDisplay();
+      updateWorkspaceLayout();
+    }
+
+    function clearSpecificInput(which) {
+      if (which === "free") {
+        freeNumberInput.value = "";
+        if (currentMode === "free") {
+          stopAllAudio();
+          closeFormulaModal();
+          clearBlocks();
+          hideAnswer();
+          clearInputError();
+          additionBuilt = false;
+          additionPracticeBuilt = false;
+          additionFreeBuilt = false;
+          additionNumbers = { a: 0, b: 0 };
+          updateDisplay();
+          updateWorkspaceLayout();
+        }
+        return;
+      }
+
+      if (which === "ab") {
+        addNumberAInput.value = "";
+        addNumberBInput.value = "";
+      }
+
+      if (isOperationMode()) {
+        clearOperationVisualState();
+      }
     }
 
     function showInputError(key) {
@@ -1458,7 +2508,7 @@
     }
 
     function getCurrentVisualMax() {
-      return currentMode === "addition" ? MAX_ADDITION_TOTAL : MAX_FREE_TOTAL;
+      return isOperationMode() ? MAX_ADDITION_TOTAL : MAX_FREE_TOTAL;
     }
 
     function validateInputNumber(input) {
@@ -1524,10 +2574,10 @@
     function createTotalAnswerBlocks() {
       clearTotalAnswerBlocks();
 
-      if (!(currentMode === "addition" && (additionBuilt || additionFreeBuilt) && answerVisible)) return;
+      if (!(isOperationMode() && (additionBuilt || additionFreeBuilt) && answerVisible)) return;
 
-      const sum = (additionNumbers.a || 0) + (additionNumbers.b || 0);
-      getBlockPiecesForNumber(sum).forEach(piece => {
+      const result = getOperationResult();
+      getBlockPiecesForNumber(result).forEach(piece => {
         const block = createBlockElement(piece.type, piece.value, "T");
         block.dataset.answerTotal = "true";
         block.style.pointerEvents = "none";
@@ -1536,7 +2586,7 @@
     }
 
     function updateAdditionTotalView() {
-      const showTotal = currentMode === "addition" && (additionBuilt || additionFreeBuilt) && answerVisible;
+      const showTotal = isOperationMode() && (additionBuilt || additionFreeBuilt) && answerVisible;
       totalAnswerGroup.classList.toggle("hidden", !showTotal);
       additionLayer.classList.toggle("show-total", showTotal);
       workspace.classList.toggle("show-addition-total", showTotal);
@@ -1571,6 +2621,11 @@
       additionBuilt = false;
       additionPracticeBuilt = false;
       additionFreeBuilt = false;
+      subtractionRegrouped = false;
+      subtractionStepCounts = null;
+      subtractionStepIndex = 0;
+      lastBorrowStepDetail = null;
+      teachingExpanded = false;
       practiceAddBtn.classList.remove("selected");
       additionNumbers = { a: 0, b: 0 };
       buildBlocksFromNumbers([number], [""]);
@@ -1581,11 +2636,16 @@
       if (numberA === null) return;
       const numberB = validateInputNumber(addNumberBInput);
       if (numberB === null) return;
-      if (!validateAdditionTotal(numberA, numberB)) return;
+      if (!validateOperationNumbers(numberA, numberB)) return;
       clearInputError();
       practiceAddBtn.classList.remove("selected");
       additionPracticeBuilt = false;
       additionFreeBuilt = false;
+      subtractionRegrouped = false;
+      subtractionStepCounts = null;
+      subtractionStepIndex = 0;
+      lastBorrowStepDetail = null;
+      teachingExpanded = false;
       additionBuilt = true;
       additionNumbers = { a: numberA, b: numberB };
       updateAdditionLabels();
@@ -1599,11 +2659,16 @@
       if (numberA === null) return;
       const numberB = validateInputNumber(addNumberBInput);
       if (numberB === null) return;
-      if (!validateAdditionTotal(numberA, numberB)) return;
+      if (!validateOperationNumbers(numberA, numberB)) return;
       clearInputError();
       practiceAddBtn.classList.add("selected");
       additionBuilt = false;
       additionFreeBuilt = false;
+      subtractionRegrouped = false;
+      subtractionStepCounts = null;
+      subtractionStepIndex = 0;
+      lastBorrowStepDetail = null;
+      teachingExpanded = false;
       additionPracticeBuilt = true;
       additionNumbers = { a: numberA, b: numberB };
       closeFormulaModal();
@@ -1670,10 +2735,18 @@
       if (isInside) {
         clearInputError();
 
-        if (currentMode === "addition" && additionBuilt) {
-          switchAdditionToFreeMode();
-          addBlock(currentDrag.type, currentDrag.value, e.clientX - rect.left, e.clientY - rect.top);
-        } else if (currentMode === "addition" && (additionPracticeBuilt || additionFreeBuilt)) {
+        if (isOperationMode() && additionBuilt) {
+          switchOperationBuiltToFreeDrag();
+          const target = findValidAdditionTargetAt(e.clientX, e.clientY, currentDrag.type);
+          if (target) addPracticeBlock(currentDrag.type, currentDrag.value, target.group, target.category);
+        } else if (isOperationMode() && (additionPracticeBuilt || additionFreeBuilt)) {
+          if (additionFreeBuilt && hasOperationQuestionInputs()) {
+            clearOperationQuestionInputs();
+            clearInputError();
+            syncAdditionNumbersFromBlocks();
+            updateAdditionLabels();
+            updateAdditionButtonStates();
+          }
           const target = findValidAdditionTargetAt(e.clientX, e.clientY, currentDrag.type);
           if (target) addPracticeBlock(currentDrag.type, currentDrag.value, target.group, target.category);
         } else {
@@ -1686,10 +2759,17 @@
     }
 
     function switchAdditionToFreeMode() {
+      if (isOperationMode()) {
+        switchOperationBuiltToFreeDrag();
+        return;
+      }
+
       setMode("free", { preserveBlocks: true });
       additionBuilt = false;
       additionPracticeBuilt = false;
       additionFreeBuilt = false;
+      subtractionRegrouped = false;
+      subtractionStepCounts = null;
       additionNumbers = { a: 0, b: 0 };
       closeFormulaModal();
     }
@@ -1702,7 +2782,7 @@
 
     function addBlock(type, value, x, y) {
       if (total + value > getCurrentVisualMax()) {
-        showInputError(currentMode === "addition" ? "total" : "freeTotal");
+        showInputError(isOperationMode() ? "total" : "freeTotal");
         return;
       }
 
@@ -1724,7 +2804,7 @@
 
     function addPracticeBlock(type, value, group, placeCategory) {
       if (total + value > getCurrentVisualMax()) {
-        showInputError(currentMode === "addition" ? "total" : "freeTotal");
+        showInputError(isOperationMode() ? "total" : "freeTotal");
         return null;
       }
 
@@ -1733,6 +2813,11 @@
       total += value;
 
       if (additionFreeBuilt) {
+        subtractionRegrouped = false;
+        subtractionStepCounts = null;
+        subtractionStepIndex = 0;
+        lastBorrowStepDetail = null;
+      teachingExpanded = false;
         syncAdditionNumbersFromBlocks();
         updateFormulaView();
       }
@@ -1763,7 +2848,14 @@
     function startMoveExisting(e) {
       e.preventDefault();
       if (e.currentTarget.dataset.group === "T") return;
-      if (currentMode === "addition" && additionBuilt) switchAdditionToFreeMode();
+      if (isOperationMode() && additionBuilt) switchOperationBuiltToFreeDrag();
+      else if (isOperationMode() && additionFreeBuilt && hasOperationQuestionInputs()) {
+        clearOperationQuestionInputs();
+        clearInputError();
+        syncAdditionNumbersFromBlocks();
+        updateAdditionLabels();
+        updateAdditionButtonStates();
+      }
       if (answerVisible) hideAnswer();
       updateDisplay();
 
@@ -1810,7 +2902,7 @@
       block.removeEventListener("pointerup", stopMoveExisting);
       block.removeEventListener("pointercancel", stopMoveExisting);
 
-      if (currentMode === "addition" && (additionPracticeBuilt || additionFreeBuilt)) {
+      if (isOperationMode() && (additionPracticeBuilt || additionFreeBuilt)) {
         const target = findValidAdditionTargetAt(e.clientX, e.clientY, block.dataset.type);
         if (target) {
           block.dataset.group = target.group;
@@ -1818,6 +2910,11 @@
         }
 
         if (additionFreeBuilt) {
+          subtractionRegrouped = false;
+          subtractionStepCounts = null;
+          subtractionStepIndex = 0;
+          lastBorrowStepDetail = null;
+      teachingExpanded = false;
           syncAdditionNumbersFromBlocks();
           updateFormulaView();
         }
@@ -1834,6 +2931,11 @@
       additionBuilt = false;
       additionPracticeBuilt = false;
       additionFreeBuilt = false;
+      subtractionRegrouped = false;
+      subtractionStepCounts = null;
+      subtractionStepIndex = 0;
+      lastBorrowStepDetail = null;
+      teachingExpanded = false;
       additionNumbers = { a: 0, b: 0 };
       clearNumberInputs();
       hideAnswer();
@@ -1844,13 +2946,16 @@
     }
 
     function updateDisplay() {
-      display.textContent = total.toString();
-      wordDisplay.textContent = languageData[currentLang].words(total);
+      const displayValue = answerVisible && isOperationMode() && (additionBuilt || additionFreeBuilt) ? getOperationResult() : total;
+      display.textContent = displayValue.toString();
+      wordDisplay.textContent = languageData[currentLang].words(displayValue);
       display.classList.toggle("hidden", !answerVisible);
       wordDisplay.classList.toggle("hidden", !answerVisible);
       speakBtn.disabled = !answerVisible;
-      const usingAdditionArea = currentMode === "addition" && (additionBuilt || additionPracticeBuilt || additionFreeBuilt);
+      const usingAdditionArea = isOperationMode() && (additionBuilt || additionPracticeBuilt || additionFreeBuilt);
       hint.style.display = (total === 0 && !usingAdditionArea) ? "grid" : "none";
+      updateTeachingPanel();
+      updateRegroupButtonLabel();
     }
 
     function showAnswer() {
@@ -1859,7 +2964,7 @@
       updateDisplay();
       updateWorkspaceLayout();
 
-      if (currentMode === "addition") {
+      if (isOperationMode()) {
         requestAnimationFrame(() => requestAnimationFrame(() => {
           updateWorkspaceLayout();
           arrangeBlocksForAddition();
@@ -1875,12 +2980,13 @@
       speakBtn.disabled = true;
       updateAdditionButtonStates();
       updateWorkspaceLayout();
+      updateTeachingPanel();
     }
 
     function updateWorkspaceLayout() {
       closeFormulaIfNeeded();
 
-      const usingAdditionArea = currentMode === "addition" && (additionBuilt || additionPracticeBuilt || additionFreeBuilt);
+      const usingAdditionArea = isOperationMode() && (additionBuilt || additionPracticeBuilt || additionFreeBuilt);
       workspace.classList.toggle("show-addition-area", usingAdditionArea);
       if (!usingAdditionArea) workspace.classList.remove("show-addition-total");
 
@@ -1903,7 +3009,7 @@
     }
 
     function closeFormulaIfNeeded() {
-      if (!(currentMode === "addition" && (additionBuilt || additionPracticeBuilt || additionFreeBuilt))) closeFormulaModal();
+      if (!(isOperationMode() && (additionBuilt || additionPracticeBuilt || additionFreeBuilt))) closeFormulaModal();
     }
 
     function getBlockRectAt(block, left, top) {
@@ -1993,7 +3099,7 @@
 
     function arrangeBlocksInWorkspace() {
       requestAnimationFrame(() => {
-        if (currentMode === "addition" && additionBuilt) return;
+        if (isOperationMode() && additionBuilt) return;
         if (answerVisible && currentMode === "free") return;
         const blocks = [...placedBlocks];
         if (!blocks.length) return;
@@ -2112,7 +3218,7 @@
 
     function arrangeBlocksForAddition() {
       requestAnimationFrame(() => {
-        if (!(currentMode === "addition" && (additionBuilt || additionPracticeBuilt || additionFreeBuilt))) return;
+        if (!(isOperationMode() && (additionBuilt || additionPracticeBuilt || additionFreeBuilt))) return;
 
         updateAdditionLabels();
         updateCategoryLabels();
@@ -2306,7 +3412,7 @@
     }
 
     function clearPracticeBlocksButton() {
-      if (!(currentMode === "addition" && hasStudentBlocksInWorkspace())) return;
+      if (!(isOperationMode() && hasStudentBlocksInWorkspace())) return;
       clearInputError();
       clearPracticeBlocksOnly();
 
@@ -2330,10 +3436,29 @@
     }
 
     function checkPracticeAnswer() {
-      if (!(currentMode === "addition" && additionPracticeBuilt)) return;
+      if (!(isOperationMode() && additionPracticeBuilt)) return;
 
       if (isPracticeAnswerCorrect()) {
         showInputError("correct");
+
+        // In subtraction practice, once the student's blocks are correct,
+        // unlock Step / Langkah so the same correct blocks can continue into borrowing.
+        if (currentMode === "subtraction") {
+          practiceAddBtn.classList.remove("selected");
+          additionPracticeBuilt = false;
+          additionFreeBuilt = false;
+          additionBuilt = true;
+          subtractionRegrouped = false;
+          subtractionStepCounts = null;
+          subtractionStepIndex = 0;
+          lastBorrowStepDetail = null;
+          updateAdditionLabels();
+          updateFormulaView();
+          updateAdditionButtonStates();
+          updateDisplay();
+          updateWorkspaceLayout();
+        }
+
         return;
       }
 
@@ -2342,6 +3467,10 @@
       practiceAddBtn.classList.add("selected");
       additionBuilt = false;
       additionFreeBuilt = false;
+      subtractionRegrouped = false;
+      subtractionStepCounts = null;
+      subtractionStepIndex = 0;
+      lastBorrowStepDetail = null;
       additionPracticeBuilt = true;
       updateAdditionLabels();
       updateAdditionButtonStates();
@@ -2351,21 +3480,33 @@
     function handleAnswerClick() {
       clearInputError();
 
-      if (currentMode === "addition" && additionFreeBuilt) {
+      if (isOperationMode() && additionFreeBuilt) {
         syncAdditionNumbersFromBlocks();
+        if (!canShowSubtractionAnswerNow()) return;
         updateFormulaView();
         showAnswer();
         updateAdditionButtonStates();
         return;
       }
 
-      if (currentMode === "addition" && additionPracticeBuilt) {
+      if (isOperationMode() && additionPracticeBuilt) {
         practiceAddBtn.classList.remove("selected");
         additionPracticeBuilt = false;
         additionFreeBuilt = false;
+        subtractionRegrouped = false;
+        subtractionStepCounts = null;
         additionBuilt = true;
         buildBlocksFromNumbers([additionNumbers.a, additionNumbers.b], ["A", "B"]);
         updateAdditionButtonStates();
+
+        if (!canShowSubtractionAnswerNow()) return;
+
+        showAnswer();
+        return;
+      }
+
+      if (isOperationMode() && additionBuilt) {
+        if (!canShowSubtractionAnswerNow()) return;
         showAnswer();
         return;
       }
@@ -2405,9 +3546,16 @@
     document.addEventListener("pointerdown", () => { preloadMalayAudio(); }, { once: true });
     speakBtn.addEventListener("click", speakCurrentAnswer);
 
+    function getCurrentSpokenValue() {
+      if (answerVisible && isOperationMode() && (additionBuilt || additionFreeBuilt)) {
+        return getOperationResult();
+      }
+      return total;
+    }
+
     async function speakCurrentAnswer() {
       if (!answerVisible) return;
-      const text = languageData[currentLang].words(total);
+      const text = languageData[currentLang].words(getCurrentSpokenValue());
       if (!text) return;
       if (currentLang === "bm") {
         window.speechSynthesis?.cancel();
@@ -2558,6 +3706,10 @@
       // Manually switching from + back to Free clears all addition blocks automatically.
       // PC and mobile can scroll with a taller workspace for large addition answers up to 200000; Blocks button renamed to Show Blocks / 显示方块 / Papar Blok.
       // Mobile total view is taller and uses a larger first row so 100000/200000 thousand blocks do not overflow into the next box.
+      // Subtraction V1 added: no borrowing/regrouping yet. Supports Free / Addition (+) / Subtraction (−) dropdown, Show Blocks, Practice, Answer and Formula.
+      // Operation mode control: without a typed question students can freely drag blocks; Show Blocks / Practice are disabled until both numbers are filled. Dragging after Show Blocks clears the question and stays in operation free-drag mode, not Free.
+      // Subtraction step-by-step: Step / 步骤 / Langkah performs one borrowing move per click before Answer.
+      // Formula explanation is now elementary-friendly for both addition and subtraction, with simple right-to-left steps and borrowing/carrying notes.
       // Free / Addition selector changed to a dropdown; Chinese language option label changed to 中文.
       // Visual block input is limited to 0–100000, free mode totals are limited to 100000, and addition totals are limited to 200000 with a clear red error message.
   </script>
