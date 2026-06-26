@@ -162,10 +162,46 @@
 
     .mode-switch {
       display: flex;
-      gap: 5px;
+      align-items: center;
+      gap: 6px;
       background: #f7f7f7;
       border-radius: 12px;
-      padding: 4px;
+      padding: 4px 6px;
+    }
+
+    .mode-label {
+      font-size: 14px;
+      font-weight: 900;
+      color: #333;
+      white-space: nowrap;
+    }
+
+    .mode-select {
+      appearance: none;
+      -webkit-appearance: none;
+      height: 32px;
+      min-width: 126px;
+      border-radius: 10px;
+      border: 2px solid #222;
+      background: #fff;
+      color: #111;
+      font-size: 14px;
+      font-weight: 900;
+      padding: 4px 30px 4px 10px;
+      cursor: pointer;
+      background-image:
+        linear-gradient(45deg, transparent 50%, #222 50%),
+        linear-gradient(135deg, #222 50%, transparent 50%);
+      background-position:
+        calc(100% - 16px) 13px,
+        calc(100% - 10px) 13px;
+      background-size: 6px 6px, 6px 6px;
+      background-repeat: no-repeat;
+    }
+
+    .mode-select:focus {
+      outline: 3px solid rgba(0,0,0,.14);
+      outline-offset: 2px;
     }
 
     .mode-btn,
@@ -667,6 +703,17 @@
         padding: 4px 8px;
       }
 
+      .mode-label { font-size: 13px; }
+      .mode-select {
+        height: 30px;
+        min-width: 118px;
+        font-size: 13px;
+        padding: 4px 28px 4px 8px;
+        background-position:
+          calc(100% - 15px) 12px,
+          calc(100% - 9px) 12px;
+      }
+
       .input-row { gap: 5px; }
       .input-label { font-size: 12px; }
       .number-input { width: 76px; height: 30px; font-size: 15px; }
@@ -788,7 +835,7 @@
       <div class="lang-switch" aria-label="Language switch">
         <select class="lang-select" id="languageSelect" aria-label="Language">
           <option value="en">English</option>
-          <option value="zh">Chinese</option>
+          <option value="zh">中文</option>
           <option value="bm">Malay</option>
         </select>
       </div>
@@ -806,8 +853,11 @@
 
     <section class="mode-panel" aria-label="Number input">
       <div class="mode-switch">
-        <button class="mode-btn active" type="button" data-mode="free" id="freeModeBtn">Free</button>
-        <button class="mode-btn" type="button" data-mode="addition" id="additionModeBtn">+</button>
+        <span class="mode-label" id="modeLabel">Mode</span>
+        <select class="mode-select" id="modeSelect" aria-label="Mode">
+          <option value="free">Free</option>
+          <option value="addition">Addition (+)</option>
+        </select>
       </div>
 
       <div class="input-row" id="freeInputRow">
@@ -974,9 +1024,8 @@
     const answerBtn = document.getElementById("answerBtn");
     const sources = document.querySelectorAll(".source-card[data-type]");
     const languageSelect = document.getElementById("languageSelect");
-    const modeButtons = document.querySelectorAll(".mode-btn");
-    const freeModeBtn = document.getElementById("freeModeBtn");
-    const additionModeBtn = document.getElementById("additionModeBtn");
+    const modeSelect = document.getElementById("modeSelect");
+    const modeLabel = document.getElementById("modeLabel");
     const freeInputRow = document.getElementById("freeInputRow");
     const additionInputRow = document.getElementById("additionInputRow");
     const freeNumberInput = document.getElementById("freeNumberInput");
@@ -1021,9 +1070,9 @@
     };
 
     const inputTextData = {
-      en: { free: "Free", number: "Number", number1: "Number 1", number2: "Number 2", blocks: "Blocks", practice: "Practice", check: "Check", clear: "Clear Blocks", question: "Question" },
-      zh: { free: "自由", number: "数字", number1: "第一个数", number2: "第二个数", blocks: "方块", practice: "练习", check: "检查", clear: "清空方块", question: "题目" },
-      bm: { free: "Bebas", number: "Nombor", number1: "Nombor 1", number2: "Nombor 2", blocks: "Blok", practice: "Latih", check: "Semak", clear: "Kosongkan Blok", question: "Soalan" }
+      en: { mode: "Mode", free: "Free", addition: "Addition (+)", number: "Number", number1: "Number 1", number2: "Number 2", blocks: "Blocks", practice: "Practice", check: "Check", clear: "Clear Blocks", question: "Question" },
+      zh: { mode: "模式", free: "自由", addition: "加法（+）", number: "数字", number1: "第一个数", number2: "第二个数", blocks: "方块", practice: "练习", check: "检查", clear: "清空方块", question: "题目" },
+      bm: { mode: "Mod", free: "Bebas", addition: "Tambah (+)", number: "Nombor", number1: "Nombor 1", number2: "Nombor 2", blocks: "Blok", practice: "Latih", check: "Semak", clear: "Kosongkan Blok", question: "Soalan" }
     };
 
     const errorTextData = {
@@ -1067,7 +1116,7 @@
     };
 
     languageSelect.addEventListener("change", () => setLanguage(languageSelect.value));
-    modeButtons.forEach(button => button.addEventListener("click", () => setMode(button.dataset.mode)));
+    modeSelect.addEventListener("change", () => setMode(modeSelect.value));
     buildFreeBtn.addEventListener("click", buildBlocksFromFreeInput);
     buildAddBtn.addEventListener("click", buildBlocksFromAdditionInput);
     practiceAddBtn.addEventListener("click", buildPracticeFromAdditionInput);
@@ -1111,7 +1160,9 @@
 
     function updateInputLabels() {
       const text = inputTextData[currentLang];
-      freeModeBtn.textContent = text.free;
+      modeLabel.textContent = text.mode;
+      modeSelect.options[0].textContent = text.free;
+      modeSelect.options[1].textContent = text.addition;
       freeNumberLabel.textContent = text.number;
       addFirstLabel.textContent = text.number1;
       addSecondLabel.textContent = text.number2;
@@ -1321,7 +1372,7 @@
         updateAdditionLabels();
       }
 
-      modeButtons.forEach(button => button.classList.toggle("active", button.dataset.mode === mode));
+      modeSelect.value = mode;
       freeInputRow.classList.toggle("hidden", mode !== "free");
       additionInputRow.classList.toggle("hidden", mode !== "addition");
 
@@ -2445,6 +2496,7 @@
       // Mobile addition layout uses page scrolling and a taller workspace so Number 1 / Number 2 / Total do not get squeezed; Reset is hidden in all addition modes.
       // Clear Blocks is enabled whenever addition has visible student blocks, including normal Blocks mode.
       // Manually switching from + back to Free clears all addition blocks automatically.
+      // Free / Addition selector changed to a dropdown; Chinese language option label changed to 中文.
   </script>
 </body>
 </html>
