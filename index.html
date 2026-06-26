@@ -1,0 +1,2378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Base Ten Blocks Tool EN ZH BM</title>
+
+  <style>
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      margin: 0;
+      min-height: 100dvh;
+      background: #f2f2f2;
+      font-family: Arial, Helvetica, sans-serif;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    .tool {
+      width: min(96vw, 1180px);
+      height: 100dvh;
+      margin: 0 auto;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .top-panel {
+      position: relative;
+      min-height: 144px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .display {
+      width: 100%;
+      padding: 0 6px;
+      text-align: center;
+      color: #222;
+      line-height: 1.12;
+    }
+
+    .number-line {
+      font-size: clamp(42px, 7vw, 72px);
+      font-weight: 800;
+      letter-spacing: 3px;
+    }
+
+    .number-line.hidden,
+    .word-line.hidden {
+      display: none;
+    }
+
+    .word-line {
+      margin-top: 5px;
+      min-height: 28px;
+      font-size: clamp(18px, 2.6vw, 26px);
+      font-weight: 800;
+      line-height: 1.2;
+      letter-spacing: .3px;
+      overflow-wrap: anywhere;
+      padding: 0 6px;
+    }
+
+    .lang-switch {
+      position: static;
+      display: flex;
+      gap: 5px;
+      z-index: 100;
+      background: #ffffff;
+      padding: 5px;
+      border-radius: 13px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.10);
+      margin: 0 auto;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .lang-select {
+      appearance: none;
+      -webkit-appearance: none;
+      height: 34px;
+      min-width: 112px;
+      border-radius: 10px;
+      border: 2px solid #222;
+      background: #fff;
+      color: #111;
+      font-size: 14px;
+      font-weight: 900;
+      padding: 5px 30px 5px 10px;
+      cursor: pointer;
+      background-image:
+        linear-gradient(45deg, transparent 50%, #222 50%),
+        linear-gradient(135deg, #222 50%, transparent 50%);
+      background-position:
+        calc(100% - 16px) 14px,
+        calc(100% - 10px) 14px;
+      background-size: 6px 6px, 6px 6px;
+      background-repeat: no-repeat;
+    }
+
+    .lang-select:focus {
+      outline: 3px solid rgba(0,0,0,.14);
+      outline-offset: 2px;
+    }
+
+    .answer-btn,
+    .speak-btn {
+      height: 34px;
+      border-radius: 10px;
+      border: 2px solid #222;
+      background: #fff;
+      color: #111;
+      font-size: 14px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .lang-btn { min-width: 42px; }
+    .answer-btn { min-width: 66px; padding: 5px 8px; }
+    .speak-btn { min-width: 42px; font-size: 15px; padding: 5px 8px; }
+
+    .answer-controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin-top: 2px;
+    }
+
+    .lang-btn.active {
+      background: #222;
+      color: #fff;
+    }
+
+    .answer-btn:active,
+    .speak-btn:active,
+    .mode-btn:active,
+    .build-btn:active,
+    .workspace-reset:active,
+    .formula-btn:active,
+    .modal-close:active {
+      transform: scale(.98);
+    }
+
+    .mode-panel {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.08);
+      padding: 8px 10px;
+    }
+
+    .mode-switch {
+      display: flex;
+      gap: 5px;
+      background: #f7f7f7;
+      border-radius: 12px;
+      padding: 4px;
+    }
+
+    .mode-btn,
+    .build-btn,
+    .formula-btn {
+      min-width: 52px;
+      height: 32px;
+      border-radius: 10px;
+      border: 2px solid #222;
+      background: #fff;
+      color: #111;
+      font-size: 14px;
+      font-weight: 900;
+      cursor: pointer;
+      padding: 4px 10px;
+      box-shadow: none;
+    }
+
+    .mode-btn.active {
+      background: #222;
+      color: #fff;
+    }
+
+    .build-btn.selected {
+      background: #222;
+      color: #fff;
+    }
+
+    .build-btn:disabled,
+    .formula-btn:disabled,
+    .speak-btn:disabled {
+      opacity: .42;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .formula-btn.hidden,
+    .input-row.hidden,
+    .input-error.hidden,
+    .category-layer.hidden,
+    .addition-layer.hidden,
+    .add-group.hidden,
+    .formula-modal.hidden {
+      display: none;
+    }
+
+    .input-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+
+    .input-label {
+      font-size: 14px;
+      font-weight: 900;
+      color: #333;
+      white-space: nowrap;
+    }
+
+    .number-input {
+      width: 94px;
+      height: 32px;
+      border: 2px solid #222;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 900;
+      text-align: center;
+      padding: 3px 6px;
+      outline: none;
+    }
+
+    .plus-symbol {
+      font-size: 20px;
+      font-weight: 900;
+      color: #222;
+    }
+
+    .question-line {
+      flex-basis: 100%;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 900;
+      color: #222;
+      min-height: 20px;
+      line-height: 1.2;
+    }
+
+    .question-line.hidden {
+      display: none;
+    }
+
+    .input-error {
+      flex-basis: 100%;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 900;
+      color: #b00020;
+      min-height: 18px;
+      line-height: 1.2;
+    }
+
+    .input-error.success {
+      color: #16803a;
+    }
+
+    .main-area {
+      flex: 1;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      gap: 12px;
+    }
+
+    .tray {
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.08);
+      padding: 10px;
+      display: grid;
+      grid-template-columns: 1fr;
+      align-content: start;
+      gap: 10px;
+      overflow-y: auto;
+      touch-action: none;
+    }
+
+    .source-card {
+      display: grid;
+      place-items: center;
+      gap: 4px;
+      padding: 8px 4px;
+      border-radius: 14px;
+      border: 2px solid #ececec;
+      background: #fff;
+      font-weight: 800;
+      font-size: 17px;
+      color: #222;
+      cursor: grab;
+      touch-action: none;
+    }
+
+    .source-card:active {
+      cursor: grabbing;
+      transform: scale(.98);
+    }
+
+    .source-img {
+      width: 72px;
+      height: 72px;
+      object-fit: contain;
+      pointer-events: none;
+    }
+
+    .workspace {
+      position: relative;
+      min-height: 0;
+      border: 3px dashed #c9c9c9;
+      border-radius: 18px;
+      background: #fff;
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    .category-layer {
+      position: absolute;
+      inset: 10px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .category-box,
+    .add-box {
+      position: relative;
+      border: 2px dashed #bdbdbd;
+      border-radius: 16px;
+      background: rgba(248, 248, 248, .78);
+      overflow: hidden;
+      contain: paint;
+    }
+
+    .category-title,
+    .add-box-title {
+      position: absolute;
+      left: 8px;
+      top: 6px;
+      z-index: 3;
+      color: #555;
+      font-size: 14px;
+      font-weight: 900;
+      background: rgba(255,255,255,.82);
+      border-radius: 8px;
+      padding: 3px 7px;
+      text-transform: lowercase;
+    }
+
+    .addition-layer {
+      position: absolute;
+      inset: 10px;
+      display: grid;
+      grid-template-rows: 1fr 1fr;
+      gap: 10px;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .addition-layer.show-total {
+      grid-template-rows: 1fr 1fr 1fr;
+    }
+
+    .add-group {
+      position: relative;
+      border: 2px dashed #bdbdbd;
+      border-radius: 16px;
+      background: rgba(248, 248, 248, .78);
+      overflow: hidden;
+      padding: 48px 10px 10px;
+    }
+
+    .add-group-head {
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      top: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      z-index: 3;
+      flex-wrap: wrap;
+    }
+
+    .add-group-label,
+    .add-group-value {
+      background: rgba(255,255,255,.88);
+      border-radius: 10px;
+      padding: 4px 9px;
+      color: #333;
+      font-weight: 900;
+    }
+
+    .add-group-label {
+      font-size: 14px;
+    }
+
+    .add-group-value {
+      font-size: 18px;
+      color: #111;
+      display: inline-grid;
+      grid-template-columns: 24px auto;
+      align-items: center;
+      justify-content: center;
+      column-gap: 5px;
+      min-width: 78px;
+      text-align: right;
+    }
+
+    .add-group-prefix {
+      display: inline-block;
+      width: 24px;
+      text-align: center;
+      font-weight: 900;
+    }
+
+    .add-group-prefix:empty::before {
+      content: "\00a0";
+    }
+
+    .add-grid {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .workspace-reset {
+      position: absolute;
+      right: 12px;
+      bottom: 12px;
+      z-index: 80;
+      font-size: 14px;
+      font-weight: 800;
+      padding: 8px 14px;
+      border-radius: 12px;
+      border: 2px solid #333;
+      background: #ffffff;
+      color: #111;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,.12);
+    }
+
+    .hint {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: #b5b5b5;
+      font-size: clamp(20px, 3vw, 34px);
+      font-weight: 800;
+      pointer-events: none;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .block {
+      position: absolute;
+      object-fit: contain;
+      touch-action: none;
+      cursor: grab;
+      z-index: 5;
+    }
+
+    .block:active {
+      cursor: grabbing;
+      z-index: 20;
+    }
+
+    .block.thousand { width: 172px; height: 172px; }
+    .block.hundred { width: 153px; height: 153px; }
+    .block.ten { width: 140px; height: 38px; }
+    .block.one { width: 58px; height: 58px; }
+
+    .ghost {
+      position: fixed;
+      pointer-events: none;
+      object-fit: contain;
+      opacity: .9;
+      z-index: 999;
+      transform: translate(-50%, -50%);
+    }
+
+    .formula-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      display: grid;
+      place-items: center;
+      background: rgba(0, 0, 0, .32);
+      padding: 18px;
+    }
+
+    .modal-card {
+      width: min(94vw, 640px);
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.18);
+      padding: 18px 18px 16px;
+    }
+
+    .modal-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .modal-title {
+      font-size: 20px;
+      font-weight: 900;
+      color: #111;
+    }
+
+    .modal-close {
+      min-width: 38px;
+      height: 34px;
+      border-radius: 10px;
+      border: 2px solid #222;
+      background: #fff;
+      color: #111;
+      font-size: 14px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .formula-stack {
+      background: #fafafa;
+      border-radius: 14px;
+      border: 2px solid #ececec;
+      padding: 16px;
+      font-weight: 900;
+      color: #111;
+      font-family: Arial, Helvetica, sans-serif;
+      overflow-x: auto;
+      overflow-y: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .formula-pv {
+      display: none;
+    }
+
+    .formula-row {
+      display: grid;
+      grid-template-columns: var(--formula-sign-width, 34px) var(--formula-digits-width, max-content);
+      align-items: center;
+      gap: var(--formula-gap, 8px);
+      font-size: clamp(28px, 6vw, 36px);
+      line-height: 1.1;
+      width: var(--formula-full-width, max-content);
+      min-width: 0;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .formula-carry-row {
+      margin-bottom: 4px;
+      font-size: clamp(18px, 4vw, 24px);
+      color: #666;
+    }
+
+    .formula-carry {
+      color: #666;
+    }
+
+    .formula-sign {
+      text-align: center;
+      font-weight: 900;
+    }
+
+    .formula-digits {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(82px, 1fr));
+      gap: 4px;
+      text-align: center;
+      width: var(--formula-digits-width, max-content);
+    }
+
+    .formula-digits > div {
+      min-width: 82px;
+      white-space: nowrap;
+    }
+
+    .formula-line {
+      margin: 8px auto;
+      border-top: 3px solid #222;
+      width: var(--formula-full-width, min(100%, 372px));
+    }
+
+    @media (max-width: 700px) {
+      .tool {
+        width: 100vw;
+        padding: 8px;
+        gap: 8px;
+      }
+
+      .top-panel {
+        min-height: 118px;
+        gap: 6px;
+      }
+
+      .number-line {
+        font-size: clamp(42px, 12vw, 62px);
+      }
+
+      .word-line {
+        font-size: clamp(17px, 5vw, 22px);
+        min-height: 24px;
+        line-height: 1.2;
+      }
+
+      .lang-switch {
+        order: -1;
+        gap: 4px;
+        padding: 4px;
+      }
+
+      .lang-btn { min-width: 46px; height: 31px; font-size: 13px; padding: 5px 10px; }
+      .answer-btn { min-width: 58px; height: 31px; font-size: 13px; padding: 5px 7px; }
+      .speak-btn { min-width: 38px; height: 31px; font-size: 14px; padding: 5px 8px; }
+
+      .mode-panel {
+        gap: 6px;
+        padding: 7px;
+      }
+
+      .mode-btn,
+      .build-btn,
+      .formula-btn {
+        min-width: 48px;
+        height: 30px;
+        font-size: 13px;
+        padding: 4px 8px;
+      }
+
+      .input-row { gap: 5px; }
+      .input-label { font-size: 12px; }
+      .number-input { width: 76px; height: 30px; font-size: 15px; }
+      .plus-symbol { font-size: 17px; }
+      .input-error { font-size: 12px; min-height: 16px; }
+
+      .main-area {
+        display: flex;
+        flex-direction: column-reverse;
+        gap: 8px;
+      }
+
+      .tray {
+        flex: 0 0 112px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 8px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding: 8px;
+      }
+
+      .source-card { min-width: 78px; height: 94px; font-size: 15px; padding: 6px; }
+      .source-img { width: 54px; height: 54px; }
+
+      .workspace { flex: 1; min-height: 310px; }
+      .workspace-reset { right: 10px; bottom: 10px; font-size: 13px; padding: 7px 12px; }
+
+      .category-layer {
+        inset: 8px;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+        gap: 8px;
+      }
+
+      .addition-layer {
+        inset: 8px;
+        gap: 8px;
+      }
+
+      .add-group {
+        padding: 50px 8px 8px;
+      }
+
+      .add-group-head {
+        left: 8px;
+        right: 8px;
+        top: 6px;
+      }
+
+      .add-group-label { font-size: 12px; padding: 3px 8px; }
+      .add-group-value { font-size: 16px; padding: 3px 8px; }
+
+      .add-grid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+        gap: 8px;
+      }
+
+      .category-title,
+      .add-box-title {
+        left: 6px;
+        top: 5px;
+        font-size: 12px;
+        padding: 2px 6px;
+      }
+
+      .block.thousand { width: 140px; height: 140px; }
+      .block.hundred { width: 125px; height: 125px; }
+      .block.ten { width: 112px; height: 32px; }
+      .block.one { width: 50px; height: 50px; }
+
+      .modal-card { width: min(95vw, 360px); padding: 14px; }
+      .modal-title { font-size: 18px; }
+      .formula-digits > div {
+        min-width: 72px;
+      }
+
+      .formula-row {
+        font-size: clamp(24px, 8vw, 32px);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="tool">
+    <section class="top-panel">
+      <div class="lang-switch" aria-label="Language switch">
+        <select class="lang-select" id="languageSelect" aria-label="Language">
+          <option value="en">English</option>
+          <option value="zh">Chinese</option>
+          <option value="bm">Malay</option>
+        </select>
+      </div>
+
+      <div class="display">
+        <div class="number-line hidden" id="numberDisplay">0</div>
+        <div class="word-line hidden" id="wordDisplay"></div>
+      </div>
+
+      <div class="answer-controls" aria-label="Answer controls">
+        <button class="answer-btn" id="answerBtn" type="button" aria-label="Answer">Answer</button>
+        <button class="speak-btn" id="speakBtn" type="button" aria-label="Speak">🔊</button>
+      </div>
+    </section>
+
+    <section class="mode-panel" aria-label="Number input">
+      <div class="mode-switch">
+        <button class="mode-btn active" type="button" data-mode="free" id="freeModeBtn">Free</button>
+        <button class="mode-btn" type="button" data-mode="addition" id="additionModeBtn">+</button>
+      </div>
+
+      <div class="input-row" id="freeInputRow">
+        <span class="input-label" id="freeNumberLabel">Number</span>
+        <input class="number-input" id="freeNumberInput" type="number" inputmode="numeric" min="0" placeholder="400" />
+        <button class="build-btn" id="buildFreeBtn" type="button">Blocks</button>
+      </div>
+
+      <div class="input-row hidden" id="additionInputRow">
+        <span class="input-label" id="addFirstLabel">Number 1</span>
+        <input class="number-input" id="addNumberAInput" type="number" inputmode="numeric" min="0" placeholder="400" />
+        <span class="plus-symbol">+</span>
+        <span class="input-label" id="addSecondLabel">Number 2</span>
+        <input class="number-input" id="addNumberBInput" type="number" inputmode="numeric" min="0" placeholder="120" />
+        <button class="build-btn" id="buildAddBtn" type="button">Blocks</button>
+        <button class="build-btn" id="practiceAddBtn" type="button">Practice</button>
+        <button class="build-btn" id="checkPracticeBtn" type="button">Check</button>
+        <button class="build-btn" id="clearPracticeBtn" type="button">Clear</button>
+        <button class="formula-btn" id="formulaBtn" type="button">Formula</button>
+      </div>
+
+      <div class="question-line hidden" id="questionLine">Question: 0 + 0</div>
+      <div class="input-error hidden" id="inputError" role="alert"></div>
+    </section>
+
+    <section class="main-area">
+      <section class="tray">
+        <div class="source-card" data-type="thousand" data-value="1000">
+          <img class="source-img" src="assets/thousand.png" onerror="this.src='assets/thousand.svg'" alt="1000 block" />
+          <span>1000</span>
+        </div>
+
+        <div class="source-card" data-type="hundred" data-value="100">
+          <img class="source-img" src="assets/hundred.png" onerror="this.src='assets/hundred.svg'" alt="100 block" />
+          <span>100</span>
+        </div>
+
+        <div class="source-card" data-type="ten" data-value="10">
+          <img class="source-img" src="assets/ten.png" onerror="this.src='assets/ten.svg'" alt="10 block" />
+          <span>10</span>
+        </div>
+
+        <div class="source-card" data-type="one" data-value="1">
+          <img class="source-img" src="assets/one.png" onerror="this.src='assets/one.svg'" alt="1 block" />
+          <span>1</span>
+        </div>
+      </section>
+
+      <section class="workspace" id="workspace">
+        <div class="category-layer hidden" id="categoryLayer" aria-hidden="true">
+          <div class="category-box" data-category="thousand"><div class="category-title">thousand</div></div>
+          <div class="category-box" data-category="hundred"><div class="category-title">hundred</div></div>
+          <div class="category-box" data-category="ten"><div class="category-title">ten</div></div>
+          <div class="category-box" data-category="one"><div class="category-title">one</div></div>
+        </div>
+
+        <div class="addition-layer hidden" id="additionLayer" aria-hidden="true">
+          <div class="add-group" data-group="A">
+            <div class="add-group-head">
+              <div class="add-group-label" id="groupALabel">Number 1</div>
+              <div class="add-group-value" id="groupAValue">0</div>
+            </div>
+            <div class="add-grid">
+              <div class="add-box" data-group="A" data-category="thousand"><div class="add-box-title">thousand</div></div>
+              <div class="add-box" data-group="A" data-category="hundred"><div class="add-box-title">hundred</div></div>
+              <div class="add-box" data-group="A" data-category="ten"><div class="add-box-title">ten</div></div>
+              <div class="add-box" data-group="A" data-category="one"><div class="add-box-title">one</div></div>
+            </div>
+          </div>
+
+          <div class="add-group" data-group="B">
+            <div class="add-group-head">
+              <div class="add-group-label" id="groupBLabel">Number 2</div>
+              <div class="add-group-value" id="groupBValue">0</div>
+            </div>
+            <div class="add-grid">
+              <div class="add-box" data-group="B" data-category="thousand"><div class="add-box-title">thousand</div></div>
+              <div class="add-box" data-group="B" data-category="hundred"><div class="add-box-title">hundred</div></div>
+              <div class="add-box" data-group="B" data-category="ten"><div class="add-box-title">ten</div></div>
+              <div class="add-box" data-group="B" data-category="one"><div class="add-box-title">one</div></div>
+            </div>
+          </div>
+
+          <div class="add-group add-total-group hidden" id="totalAnswerGroup" data-group="T">
+            <div class="add-group-head">
+              <div class="add-group-label" id="groupTLabel">Total</div>
+              <div class="add-group-value" id="groupTValue">0</div>
+            </div>
+            <div class="add-grid">
+              <div class="add-box" data-group="T" data-category="thousand"><div class="add-box-title">thousand</div></div>
+              <div class="add-box" data-group="T" data-category="hundred"><div class="add-box-title">hundred</div></div>
+              <div class="add-box" data-group="T" data-category="ten"><div class="add-box-title">ten</div></div>
+              <div class="add-box" data-group="T" data-category="one"><div class="add-box-title">one</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="hint" id="hint">Drag blocks here</div>
+        <button class="workspace-reset" id="resetBtn" type="button">Reset</button>
+      </section>
+    </section>
+  </main>
+
+  <div class="formula-modal hidden" id="formulaModal" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-top">
+        <div class="modal-title" id="formulaTitle">Formula</div>
+        <button class="modal-close" id="formulaCloseBtn" type="button">✕</button>
+      </div>
+      <div class="formula-stack">
+        <div class="formula-pv" id="formulaPvLabels">
+          <div>thousand</div><div>hundred</div><div>ten</div><div>one</div>
+        </div>
+        <div class="formula-row formula-carry-row">
+          <div class="formula-sign"></div>
+          <div class="formula-digits formula-carry" id="formulaCarryDigits"></div>
+        </div>
+        <div class="formula-row">
+          <div class="formula-sign"></div>
+          <div class="formula-digits" id="formulaDigitsA"></div>
+        </div>
+        <div class="formula-row">
+          <div class="formula-sign">+</div>
+          <div class="formula-digits" id="formulaDigitsB"></div>
+        </div>
+        <div class="formula-line" id="formulaLine"></div>
+        <div class="formula-row">
+          <div class="formula-sign"></div>
+          <div class="formula-digits" id="formulaDigitsSum"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const workspace = document.getElementById("workspace");
+    const display = document.getElementById("numberDisplay");
+    const wordDisplay = document.getElementById("wordDisplay");
+    const hint = document.getElementById("hint");
+    const categoryLayer = document.getElementById("categoryLayer");
+    const categoryBoxes = document.querySelectorAll(".category-box");
+    const additionLayer = document.getElementById("additionLayer");
+    const additionBoxes = document.querySelectorAll(".add-box");
+    const groupALabel = document.getElementById("groupALabel");
+    const groupAValue = document.getElementById("groupAValue");
+    const groupBLabel = document.getElementById("groupBLabel");
+    const groupBValue = document.getElementById("groupBValue");
+    const totalAnswerGroup = document.getElementById("totalAnswerGroup");
+    const groupTLabel = document.getElementById("groupTLabel");
+    const groupTValue = document.getElementById("groupTValue");
+    const formulaBtn = document.getElementById("formulaBtn");
+    const formulaModal = document.getElementById("formulaModal");
+    const formulaTitle = document.getElementById("formulaTitle");
+    const formulaCloseBtn = document.getElementById("formulaCloseBtn");
+    const formulaStack = document.querySelector(".formula-stack");
+    const formulaPvLabels = document.getElementById("formulaPvLabels");
+    const formulaCarryDigits = document.getElementById("formulaCarryDigits");
+    const formulaDigitsA = document.getElementById("formulaDigitsA");
+    const formulaDigitsB = document.getElementById("formulaDigitsB");
+    const formulaDigitsSum = document.getElementById("formulaDigitsSum");
+    const formulaLine = document.getElementById("formulaLine");
+    const resetBtn = document.getElementById("resetBtn");
+    const speakBtn = document.getElementById("speakBtn");
+    const answerBtn = document.getElementById("answerBtn");
+    const sources = document.querySelectorAll(".source-card[data-type]");
+    const languageSelect = document.getElementById("languageSelect");
+    const modeButtons = document.querySelectorAll(".mode-btn");
+    const freeModeBtn = document.getElementById("freeModeBtn");
+    const additionModeBtn = document.getElementById("additionModeBtn");
+    const freeInputRow = document.getElementById("freeInputRow");
+    const additionInputRow = document.getElementById("additionInputRow");
+    const freeNumberInput = document.getElementById("freeNumberInput");
+    const addNumberAInput = document.getElementById("addNumberAInput");
+    const addNumberBInput = document.getElementById("addNumberBInput");
+    const buildFreeBtn = document.getElementById("buildFreeBtn");
+    const buildAddBtn = document.getElementById("buildAddBtn");
+    const practiceAddBtn = document.getElementById("practiceAddBtn");
+    const checkPracticeBtn = document.getElementById("checkPracticeBtn");
+    const clearPracticeBtn = document.getElementById("clearPracticeBtn");
+    const questionLine = document.getElementById("questionLine");
+    const inputError = document.getElementById("inputError");
+    const freeNumberLabel = document.getElementById("freeNumberLabel");
+    const addFirstLabel = document.getElementById("addFirstLabel");
+    const addSecondLabel = document.getElementById("addSecondLabel");
+
+    let total = 0;
+    let currentDrag = null;
+    let currentLang = "en";
+    let currentMode = "free";
+    let answerVisible = false;
+    let currentAudio = null;
+    let bmAudioToken = 0;
+    const placedBlocks = [];
+
+    let currentErrorKey = "";
+    let additionBuilt = false;
+    let additionPracticeBuilt = false;
+    let additionFreeBuilt = false;
+    let additionNumbers = { a: 0, b: 0 };
+
+    const languageData = {
+      en: { words: numberToEnglish, speechLang: "en-US" },
+      zh: { words: numberToChinese, speechLang: "zh-CN" },
+      bm: { words: numberToMalay, speechLang: "ms-MY" }
+    };
+
+    const buttonTextData = {
+      en: { answer: "Answer", reset: "Reset", formula: "Formula", close: "Close" },
+      zh: { answer: "答案", reset: "重置", formula: "直式", close: "关闭" },
+      bm: { answer: "Jawapan", reset: "Mula Semula", formula: "Bentuk", close: "Tutup" }
+    };
+
+    const inputTextData = {
+      en: { free: "Free", number: "Number", number1: "Number 1", number2: "Number 2", blocks: "Blocks", practice: "Practice", check: "Check", clear: "Clear Blocks", question: "Question" },
+      zh: { free: "自由", number: "数字", number1: "第一个数", number2: "第二个数", blocks: "方块", practice: "练习", check: "检查", clear: "清空方块", question: "题目" },
+      bm: { free: "Bebas", number: "Nombor", number1: "Nombor 1", number2: "Nombor 2", blocks: "Blok", practice: "Latih", check: "Semak", clear: "Kosongkan Blok", question: "Soalan" }
+    };
+
+    const errorTextData = {
+      en: {
+        range: "Please enter a number 0 or above.",
+        total: "",
+        correct: "Correct!",
+        tryAgain: "Wrong answer, please try again."
+      },
+      zh: {
+        range: "请输入0或以上的数字。",
+        total: "",
+        correct: "正确！",
+        tryAgain: "答案错误，请重新尝试。"
+      },
+      bm: {
+        range: "Sila masukkan nombor 0 atau lebih.",
+        total: "",
+        correct: "Betul!",
+        tryAgain: "Jawapan salah, sila cuba lagi."
+      }
+    };
+
+    const categoryTextData = {
+      en: { thousand: "thousand", hundred: "hundred", ten: "ten", one: "one" },
+      zh: { thousand: "千", hundred: "百", ten: "十", one: "个" },
+      bm: { thousand: "ribu", hundred: "ratus", ten: "puluh", one: "sa" }
+    };
+
+    const formulaTextData = {
+      en: { title: "formula", groupA: "number 1", groupB: "number 2", total: "total", pv: ["thousand", "hundred", "ten", "one"] },
+      zh: { title: "直式", groupA: "第一个数", groupB: "第二个数", total: "总数", pv: ["千", "百", "十", "个"] },
+      bm: { title: "bentuk", groupA: "nombor 1", groupB: "nombor 2", total: "jumlah", pv: ["ribu", "ratus", "puluh", "sa"] }
+    };
+
+    const blockOriginalSize = {
+      thousand: { pc: [172, 172], mobile: [140, 140] },
+      hundred: { pc: [153, 153], mobile: [125, 125] },
+      ten: { pc: [140, 38], mobile: [112, 32] },
+      one: { pc: [58, 58], mobile: [50, 50] }
+    };
+
+    languageSelect.addEventListener("change", () => setLanguage(languageSelect.value));
+    modeButtons.forEach(button => button.addEventListener("click", () => setMode(button.dataset.mode)));
+    buildFreeBtn.addEventListener("click", buildBlocksFromFreeInput);
+    buildAddBtn.addEventListener("click", buildBlocksFromAdditionInput);
+    practiceAddBtn.addEventListener("click", buildPracticeFromAdditionInput);
+    checkPracticeBtn.addEventListener("click", checkPracticeAnswer);
+    clearPracticeBtn.addEventListener("click", clearPracticeBlocksButton);
+    formulaBtn.addEventListener("click", openFormulaModal);
+    formulaCloseBtn.addEventListener("click", closeFormulaModal);
+    formulaModal.addEventListener("click", e => { if (e.target === formulaModal) closeFormulaModal(); });
+
+    [freeNumberInput, addNumberAInput, addNumberBInput].forEach(input => {
+      input.addEventListener("keydown", event => {
+        if (event.key !== "Enter") return;
+        if (currentMode === "addition") buildBlocksFromAdditionInput();
+        else buildBlocksFromFreeInput();
+      });
+    });
+
+    function setLanguage(lang) {
+      stopAllAudio();
+      currentLang = lang;
+
+      languageSelect.value = lang;
+
+      const buttonText = buttonTextData[lang];
+      answerBtn.textContent = buttonText.answer;
+      answerBtn.setAttribute("aria-label", buttonText.answer);
+      resetBtn.textContent = buttonText.reset;
+      formulaBtn.textContent = buttonText.formula;
+      formulaTitle.textContent = formulaTextData[lang].title;
+      formulaCloseBtn.textContent = buttonText.close === "Close" ? "✕" : "✕";
+
+      updateInputLabels();
+      updateCategoryLabels();
+      updateAdditionLabels();
+      updateFormulaView();
+      updateQuestionLine();
+      updateAdditionButtonStates();
+      updateErrorMessage();
+      updateDisplay();
+    }
+
+    function updateInputLabels() {
+      const text = inputTextData[currentLang];
+      freeModeBtn.textContent = text.free;
+      freeNumberLabel.textContent = text.number;
+      addFirstLabel.textContent = text.number1;
+      addSecondLabel.textContent = text.number2;
+      buildFreeBtn.textContent = text.blocks;
+      buildAddBtn.textContent = text.blocks;
+      practiceAddBtn.textContent = text.practice;
+      checkPracticeBtn.textContent = text.check;
+      clearPracticeBtn.textContent = text.clear;
+      updateQuestionLine();
+    }
+
+    function updateCategoryLabels() {
+      const labels = categoryTextData[currentLang];
+      categoryBoxes.forEach(box => box.querySelector(".category-title").textContent = labels[box.dataset.category]);
+      additionBoxes.forEach(box => box.querySelector(".add-box-title").textContent = labels[box.dataset.category]);
+    }
+
+    function updateAdditionLabels() {
+      const text = formulaTextData[currentLang];
+      groupALabel.textContent = text.groupA;
+      groupBLabel.textContent = text.groupB;
+      groupTLabel.textContent = text.total;
+      groupAValue.innerHTML = `<span class="add-group-prefix"></span><span>${additionNumbers.a}</span>`;
+      groupBValue.innerHTML = `<span class="add-group-prefix">+</span><span>${additionNumbers.b}</span>`;
+      groupTValue.innerHTML = `<span class="add-group-prefix">=</span><span>${(additionNumbers.a || 0) + (additionNumbers.b || 0)}</span>`;
+      updateQuestionLine();
+      updateAdditionButtonStates();
+    }
+
+    function updateQuestionLine() {
+      const hasQuestion = currentMode === "addition" && (additionBuilt || additionPracticeBuilt);
+      const text = inputTextData[currentLang];
+      questionLine.textContent = `${text.question}: ${additionNumbers.a} + ${additionNumbers.b}`;
+      questionLine.classList.toggle("hidden", !hasQuestion);
+    }
+
+    function updateAdditionButtonStates() {
+      const isAdditionMode = currentMode === "addition";
+      const isPractice = isAdditionMode && additionPracticeBuilt;
+      const hasAdditionWork = isAdditionMode && (additionBuilt || additionPracticeBuilt || additionFreeBuilt);
+      const canClearStudentBlocks = isAdditionMode && (additionPracticeBuilt || additionFreeBuilt);
+
+      // Formula is only available after Answer is pressed.
+      // If the user keys in again, enters Practice again, drags more blocks, or clears blocks,
+      // hideAnswer() runs and Formula becomes grey again.
+      const formulaReady = hasAdditionWork && answerVisible;
+
+      formulaBtn.disabled = !formulaReady;
+      checkPracticeBtn.disabled = !isPractice;
+      clearPracticeBtn.disabled = !canClearStudentBlocks;
+      resetBtn.style.display = canClearStudentBlocks ? "none" : "inline-flex";
+    }
+
+    function getGroupBlockTotal(group) {
+      return placedBlocks
+        .filter(block => block.dataset.group === group && block.dataset.group !== "T")
+        .reduce((sum, block) => sum + Number(block.dataset.value || 0), 0);
+    }
+
+    function syncAdditionNumbersFromBlocks() {
+      if (!(currentMode === "addition" && additionFreeBuilt)) return;
+      additionNumbers = {
+        a: getGroupBlockTotal("A"),
+        b: getGroupBlockTotal("B")
+      };
+      updateAdditionLabels();
+    }
+
+    function updateFormulaView() {
+      if (currentMode === "addition" && additionFreeBuilt) {
+        syncAdditionNumbersFromBlocks();
+      }
+
+      const text = formulaTextData[currentLang];
+      const a = Math.max(0, Math.floor(additionNumbers.a || 0));
+      const b = Math.max(0, Math.floor(additionNumbers.b || 0));
+      const sum = a + b;
+      const length = Math.max(String(a).length, String(b).length, String(sum).length, 1);
+
+      formulaTitle.textContent = text.title;
+      formulaPvLabels.innerHTML = getPlaceValueLabels(length, currentLang).map(item => `<div>${item}</div>`).join("");
+      setFormulaColumnLayout(length);
+      renderFormulaDigits(formulaCarryDigits, getCarryDigits(a, b, length), false);
+      renderFormulaDigits(formulaDigitsA, padDigits(a, length), true);
+      renderFormulaDigits(formulaDigitsB, padDigits(b, length), true);
+      renderFormulaDigits(formulaDigitsSum, padDigits(sum, length), true);
+    }
+
+    function setFormulaColumnLayout(length) {
+      const minWidth = window.matchMedia("(max-width: 700px)").matches ? 72 : 82;
+      const signWidth = window.matchMedia("(max-width: 700px)").matches ? 30 : 34;
+      const gap = 8;
+      const digitGap = 4;
+      const columns = `repeat(${length}, minmax(${minWidth}px, 1fr))`;
+      const digitsWidth = (length * minWidth) + ((length - 1) * digitGap);
+      const fullWidth = signWidth + gap + digitsWidth;
+
+      formulaStack.style.setProperty("--formula-sign-width", signWidth + "px");
+      formulaStack.style.setProperty("--formula-gap", gap + "px");
+      formulaStack.style.setProperty("--formula-digits-width", digitsWidth + "px");
+      formulaStack.style.setProperty("--formula-full-width", fullWidth + "px");
+
+      [formulaCarryDigits, formulaDigitsA, formulaDigitsB, formulaDigitsSum].forEach(element => {
+        element.style.gridTemplateColumns = columns;
+      });
+
+      formulaLine.style.width = fullWidth + "px";
+    }
+
+    function padDigits(value, length) {
+      return String(Math.max(0, Math.floor(value))).padStart(length, "0").split("");
+    }
+
+    function getCarryDigits(a, b, length) {
+      const ad = padDigits(a, length).map(Number);
+      const bd = padDigits(b, length).map(Number);
+      const carryRow = Array(length).fill("");
+      let carry = 0;
+
+      for (let i = length - 1; i >= 0; i--) {
+        const total = ad[i] + bd[i] + carry;
+        const nextCarry = Math.floor(total / 10);
+        if (nextCarry > 0 && i > 0) carryRow[i - 1] = String(nextCarry);
+        carry = nextCarry;
+      }
+
+      return carryRow;
+    }
+
+    function getPlaceValueLabels(length, lang) {
+      const labels = {
+        en: ["one", "ten", "hundred", "thousand", "ten thousand", "hundred thousand", "million", "ten million", "hundred million", "billion"],
+        zh: ["个", "十", "百", "千", "万", "十万", "百万", "千万", "亿", "十亿"],
+        bm: ["sa", "puluh", "ratus", "ribu", "puluh ribu", "ratus ribu", "juta", "puluh juta", "ratus juta", "bilion"]
+      };
+      const arr = labels[lang] || labels.en;
+      const picked = [];
+      for (let i = length - 1; i >= 0; i--) {
+        picked.push(arr[i] || "");
+      }
+      return picked;
+    }
+
+    function renderFormulaDigits(target, digits, showZeros) {
+      target.innerHTML = digits.map((d, index) => {
+        const text = (d === "0" || d === 0) && !showZeros ? "" : String(d);
+        return `<div>${text}</div>`;
+      }).join("");
+    }
+
+    function openFormulaModal() {
+      if (currentMode !== "addition") return;
+      if (formulaBtn.disabled) return;
+      if (!additionBuilt && !additionPracticeBuilt && !additionFreeBuilt) return;
+
+      updateFormulaView();
+      formulaModal.classList.remove("hidden");
+      formulaModal.setAttribute("aria-hidden", "false");
+    }
+
+    function closeFormulaModal() {
+      formulaModal.classList.add("hidden");
+      formulaModal.setAttribute("aria-hidden", "true");
+    }
+
+    function setMode(mode, options = {}) {
+      const { preserveBlocks = false } = options;
+      const modeChanged = currentMode !== mode;
+      currentMode = mode;
+
+      if (modeChanged) {
+        clearNumberInputs();
+      }
+
+      if (mode === "free") {
+        clearTotalAnswerBlocks();
+        additionBuilt = false;
+        additionPracticeBuilt = false;
+        additionFreeBuilt = false;
+        practiceAddBtn.classList.remove("selected");
+        formulaBtn.classList.add("hidden");
+        questionLine.classList.add("hidden");
+        placedBlocks.forEach(block => {
+          delete block.dataset.group;
+          delete block.dataset.placeCategory;
+        });
+      } else {
+        if (modeChanged && !preserveBlocks) {
+          clearBlocks();
+          additionNumbers = { a: 0, b: 0 };
+        }
+        additionBuilt = false;
+        additionPracticeBuilt = false;
+        additionFreeBuilt = true;
+        practiceAddBtn.classList.remove("selected");
+        formulaBtn.classList.remove("hidden");
+        updateAdditionLabels();
+      }
+
+      modeButtons.forEach(button => button.classList.toggle("active", button.dataset.mode === mode));
+      freeInputRow.classList.toggle("hidden", mode !== "free");
+      additionInputRow.classList.toggle("hidden", mode !== "addition");
+
+      if (!preserveBlocks) hideAnswer();
+      else {
+        closeFormulaModal();
+        hideAnswer();
+      }
+
+      updateQuestionLine();
+      updateAdditionButtonStates();
+      updateWorkspaceLayout();
+      updateDisplay();
+    }
+
+    function clearNumberInputs() {
+      freeNumberInput.value = "";
+      addNumberAInput.value = "";
+      addNumberBInput.value = "";
+      clearInputError();
+      updateQuestionLine();
+      updateAdditionButtonStates();
+    }
+
+    function showInputError(key) {
+      currentErrorKey = key;
+      inputError.textContent = errorTextData[currentLang][key];
+      inputError.classList.toggle("success", key === "correct");
+      inputError.classList.remove("hidden");
+    }
+
+    function clearInputError() {
+      currentErrorKey = "";
+      inputError.textContent = "";
+      inputError.classList.remove("success");
+      inputError.classList.add("hidden");
+    }
+
+    function updateErrorMessage() {
+      if (currentErrorKey) inputError.textContent = errorTextData[currentLang][currentErrorKey];
+    }
+
+    function getInputNumber(input) {
+      const value = Number(input.value);
+      if (!Number.isFinite(value)) return 0;
+      return Math.floor(value);
+    }
+
+    function validateInputNumber(input) {
+      const value = getInputNumber(input);
+      if (value < 0) {
+        showInputError("range");
+        return null;
+      }
+      return value;
+    }
+
+    function clearBlocks() {
+      placedBlocks.splice(0).forEach(block => block.remove());
+      total = 0;
+    }
+
+    function getBlockPiecesForNumber(number) {
+      const pieces = [];
+      let remaining = Math.max(0, Math.floor(number));
+      const thousands = Math.floor(remaining / 1000); remaining %= 1000;
+      const hundreds = Math.floor(remaining / 100); remaining %= 100;
+      const tens = Math.floor(remaining / 10);
+      const ones = remaining % 10;
+      for (let i = 0; i < thousands; i++) pieces.push({ type: "thousand", value: 1000 });
+      for (let i = 0; i < hundreds; i++) pieces.push({ type: "hundred", value: 100 });
+      for (let i = 0; i < tens; i++) pieces.push({ type: "ten", value: 10 });
+      for (let i = 0; i < ones; i++) pieces.push({ type: "one", value: 1 });
+      return pieces;
+    }
+
+    function createBlockElement(type, value, group = "") {
+      const block = document.createElement("img");
+      block.src = `assets/${type}.png`;
+      block.onerror = () => block.src = `assets/${type}.svg`;
+      block.className = `block ${type}`;
+      block.dataset.type = type;
+      block.dataset.value = value;
+      if (group) block.dataset.group = group;
+      setBlockOriginalSize(block);
+      workspace.appendChild(block);
+      block.addEventListener("pointerdown", startMoveExisting);
+      placedBlocks.push(block);
+      return block;
+    }
+
+    function clearTotalAnswerBlocks() {
+      for (let i = placedBlocks.length - 1; i >= 0; i--) {
+        const block = placedBlocks[i];
+        if (block.dataset.group !== "T") continue;
+        block.remove();
+        placedBlocks.splice(i, 1);
+      }
+    }
+
+    function createTotalAnswerBlocks() {
+      clearTotalAnswerBlocks();
+
+      if (!(currentMode === "addition" && (additionBuilt || additionFreeBuilt) && answerVisible)) return;
+
+      const sum = (additionNumbers.a || 0) + (additionNumbers.b || 0);
+      getBlockPiecesForNumber(sum).forEach(piece => {
+        const block = createBlockElement(piece.type, piece.value, "T");
+        block.dataset.answerTotal = "true";
+        block.style.pointerEvents = "none";
+        block.style.cursor = "default";
+      });
+    }
+
+    function updateAdditionTotalView() {
+      const showTotal = currentMode === "addition" && (additionBuilt || additionFreeBuilt) && answerVisible;
+      totalAnswerGroup.classList.toggle("hidden", !showTotal);
+      additionLayer.classList.toggle("show-total", showTotal);
+
+      if (showTotal) createTotalAnswerBlocks();
+      else clearTotalAnswerBlocks();
+    }
+
+    function buildBlocksFromNumbers(numbers, groups = []) {
+      stopAllAudio();
+      clearBlocks();
+      numbers.forEach((number, index) => {
+        const safeNumber = Math.max(0, Math.floor(number));
+        getBlockPiecesForNumber(safeNumber).forEach(piece => {
+          createBlockElement(piece.type, piece.value, groups[index] || "");
+          total += piece.value;
+        });
+      });
+      hideAnswer();
+      updateQuestionLine();
+      updateAdditionButtonStates();
+      updateDisplay();
+      updateWorkspaceLayout();
+    }
+
+    function buildBlocksFromFreeInput() {
+      const number = validateInputNumber(freeNumberInput);
+      if (number === null) return;
+      clearInputError();
+      additionBuilt = false;
+      additionPracticeBuilt = false;
+      additionFreeBuilt = false;
+      practiceAddBtn.classList.remove("selected");
+      additionNumbers = { a: 0, b: 0 };
+      buildBlocksFromNumbers([number], [""]);
+    }
+
+    function buildBlocksFromAdditionInput() {
+      const numberA = validateInputNumber(addNumberAInput);
+      if (numberA === null) return;
+      const numberB = validateInputNumber(addNumberBInput);
+      if (numberB === null) return;
+      clearInputError();
+      practiceAddBtn.classList.remove("selected");
+      additionPracticeBuilt = false;
+      additionFreeBuilt = false;
+      additionBuilt = true;
+      additionNumbers = { a: numberA, b: numberB };
+      updateAdditionLabels();
+      updateFormulaView();
+      updateAdditionButtonStates();
+      buildBlocksFromNumbers([numberA, numberB], ["A", "B"]);
+    }
+
+    function buildPracticeFromAdditionInput() {
+      const numberA = validateInputNumber(addNumberAInput);
+      if (numberA === null) return;
+      const numberB = validateInputNumber(addNumberBInput);
+      if (numberB === null) return;
+      clearInputError();
+      practiceAddBtn.classList.add("selected");
+      additionBuilt = false;
+      additionFreeBuilt = false;
+      additionPracticeBuilt = true;
+      additionNumbers = { a: numberA, b: numberB };
+      closeFormulaModal();
+      clearBlocks();
+      updateAdditionLabels();
+      updateFormulaView();
+      updateAdditionButtonStates();
+      hideAnswer();
+      updateDisplay();
+      updateWorkspaceLayout();
+    }
+
+    sources.forEach(source => source.addEventListener("pointerdown", startFromSource));
+
+    function startFromSource(e) {
+      e.preventDefault();
+      const source = e.currentTarget;
+      const type = source.dataset.type;
+      const value = Number(source.dataset.value);
+      const img = source.querySelector("img");
+
+      const ghost = document.createElement("img");
+      ghost.src = img.currentSrc || img.src;
+      ghost.className = "ghost";
+      setGhostSize(ghost, type);
+      document.body.appendChild(ghost);
+
+      currentDrag = { mode: "new", pointerId: e.pointerId, type, value, ghost };
+      moveGhost(e.clientX, e.clientY);
+
+      source.setPointerCapture(e.pointerId);
+      source.addEventListener("pointermove", onSourcePointerMove);
+      source.addEventListener("pointerup", onSourcePointerUp);
+      source.addEventListener("pointercancel", onSourcePointerUp);
+    }
+
+    function setGhostSize(ghost, type) {
+      const small = window.matchMedia("(max-width: 700px)").matches;
+      const size = {
+        thousand: small ? ["140px", "140px"] : ["172px", "172px"],
+        hundred: small ? ["125px", "125px"] : ["153px", "153px"],
+        ten: small ? ["112px", "32px"] : ["140px", "38px"],
+        one: small ? ["50px", "50px"] : ["58px", "58px"]
+      }[type];
+      ghost.style.width = size[0];
+      ghost.style.height = size[1];
+    }
+
+    function onSourcePointerMove(e) {
+      if (!currentDrag) return;
+      moveGhost(e.clientX, e.clientY);
+    }
+
+    function onSourcePointerUp(e) {
+      if (!currentDrag) return;
+      const source = e.currentTarget;
+      source.removeEventListener("pointermove", onSourcePointerMove);
+      source.removeEventListener("pointerup", onSourcePointerUp);
+      source.removeEventListener("pointercancel", onSourcePointerUp);
+
+      const rect = workspace.getBoundingClientRect();
+      const isInside = e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top && e.clientY <= rect.bottom;
+
+      if (isInside) {
+        clearInputError();
+
+        if (currentMode === "addition" && additionBuilt) {
+          switchAdditionToFreeMode();
+          addBlock(currentDrag.type, currentDrag.value, e.clientX - rect.left, e.clientY - rect.top);
+        } else if (currentMode === "addition" && (additionPracticeBuilt || additionFreeBuilt)) {
+          const target = findValidAdditionTargetAt(e.clientX, e.clientY, currentDrag.type);
+          if (target) addPracticeBlock(currentDrag.type, currentDrag.value, target.group, target.category);
+        } else {
+          addBlock(currentDrag.type, currentDrag.value, e.clientX - rect.left, e.clientY - rect.top);
+        }
+      }
+
+      currentDrag.ghost.remove();
+      currentDrag = null;
+    }
+
+    function switchAdditionToFreeMode() {
+      setMode("free", { preserveBlocks: true });
+      additionBuilt = false;
+      additionPracticeBuilt = false;
+      additionFreeBuilt = false;
+      additionNumbers = { a: 0, b: 0 };
+      closeFormulaModal();
+    }
+
+    function moveGhost(x, y) {
+      if (!currentDrag || !currentDrag.ghost) return;
+      currentDrag.ghost.style.left = x + "px";
+      currentDrag.ghost.style.top = y + "px";
+    }
+
+    function addBlock(type, value, x, y) {
+
+      const block = createBlockElement(type, value);
+      requestAnimationFrame(() => {
+        const maxX = workspace.clientWidth - block.offsetWidth;
+        const maxY = workspace.clientHeight - block.offsetHeight;
+        const wantedLeft = clamp(x - block.offsetWidth / 2, 0, maxX);
+        const wantedTop = clamp(y - block.offsetHeight / 2, 0, maxY);
+        const position = findFreePosition(block, wantedLeft, wantedTop);
+        block.style.left = position.left + "px";
+        block.style.top = position.top + "px";
+      });
+      total += value;
+      hideAnswer();
+      updateDisplay();
+      updateWorkspaceLayout();
+    }
+
+    function addPracticeBlock(type, value, group, placeCategory) {
+      const block = createBlockElement(type, value, group);
+      block.dataset.placeCategory = placeCategory;
+      total += value;
+
+      if (additionFreeBuilt) {
+        syncAdditionNumbersFromBlocks();
+        updateFormulaView();
+      }
+
+      hideAnswer();
+      updateDisplay();
+      updateWorkspaceLayout();
+      return block;
+    }
+
+    function findAdditionTargetAt(clientX, clientY) {
+      for (const box of additionBoxes) {
+        const rect = box.getBoundingClientRect();
+        const inside = clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom;
+        if (!inside) continue;
+        return { group: box.dataset.group, category: box.dataset.category };
+      }
+      return null;
+    }
+
+    function findValidAdditionTargetAt(clientX, clientY, type) {
+      const target = findAdditionTargetAt(clientX, clientY);
+      if (!target) return null;
+      if (target.category !== type) return null;
+      return target;
+    }
+
+    function startMoveExisting(e) {
+      e.preventDefault();
+      if (e.currentTarget.dataset.group === "T") return;
+      if (currentMode === "addition" && additionBuilt) switchAdditionToFreeMode();
+      if (answerVisible) hideAnswer();
+      updateDisplay();
+
+      const block = e.currentTarget;
+      const rect = workspace.getBoundingClientRect();
+      const blockRect = block.getBoundingClientRect();
+      currentDrag = {
+        mode: "move",
+        block,
+        offsetX: e.clientX - blockRect.left,
+        offsetY: e.clientY - blockRect.top,
+        workspaceRect: rect,
+        lastLeft: parseFloat(block.style.left) || 0,
+        lastTop: parseFloat(block.style.top) || 0
+      };
+
+      block.setPointerCapture(e.pointerId);
+      block.addEventListener("pointermove", moveExisting);
+      block.addEventListener("pointerup", stopMoveExisting);
+      block.addEventListener("pointercancel", stopMoveExisting);
+    }
+
+    function moveExisting(e) {
+      if (!currentDrag || currentDrag.mode !== "move") return;
+      const { block, offsetX, offsetY, workspaceRect } = currentDrag;
+      const maxX = workspace.clientWidth - block.offsetWidth;
+      const maxY = workspace.clientHeight - block.offsetHeight;
+      const nextLeft = clamp(e.clientX - workspaceRect.left - offsetX, 0, maxX);
+      const nextTop = clamp(e.clientY - workspaceRect.top - offsetY, 0, maxY);
+      if (!hasOverlap(block, nextLeft, nextTop)) {
+        block.style.left = nextLeft + "px";
+        block.style.top = nextTop + "px";
+        currentDrag.lastLeft = nextLeft;
+        currentDrag.lastTop = nextTop;
+      } else {
+        block.style.left = currentDrag.lastLeft + "px";
+        block.style.top = currentDrag.lastTop + "px";
+      }
+    }
+
+    function stopMoveExisting(e) {
+      const block = e.currentTarget;
+      block.removeEventListener("pointermove", moveExisting);
+      block.removeEventListener("pointerup", stopMoveExisting);
+      block.removeEventListener("pointercancel", stopMoveExisting);
+
+      if (currentMode === "addition" && (additionPracticeBuilt || additionFreeBuilt)) {
+        const target = findValidAdditionTargetAt(e.clientX, e.clientY, block.dataset.type);
+        if (target) {
+          block.dataset.group = target.group;
+          block.dataset.placeCategory = target.category;
+        }
+
+        if (additionFreeBuilt) {
+          syncAdditionNumbersFromBlocks();
+          updateFormulaView();
+        }
+
+        updateWorkspaceLayout();
+      }
+
+      currentDrag = null;
+    }
+
+    function reset() {
+      stopAllAudio();
+      closeFormulaModal();
+      additionBuilt = false;
+      additionPracticeBuilt = false;
+      additionFreeBuilt = false;
+      additionNumbers = { a: 0, b: 0 };
+      clearNumberInputs();
+      hideAnswer();
+      placedBlocks.splice(0).forEach(block => block.remove());
+      total = 0;
+      updateDisplay();
+      updateWorkspaceLayout();
+    }
+
+    function updateDisplay() {
+      display.textContent = total.toString();
+      wordDisplay.textContent = languageData[currentLang].words(total);
+      display.classList.toggle("hidden", !answerVisible);
+      wordDisplay.classList.toggle("hidden", !answerVisible);
+      speakBtn.disabled = !answerVisible;
+      const usingAdditionArea = currentMode === "addition" && (additionBuilt || additionPracticeBuilt || additionFreeBuilt);
+      hint.style.display = (total === 0 && !usingAdditionArea) ? "grid" : "none";
+    }
+
+    function showAnswer() {
+      answerVisible = true;
+      updateAdditionButtonStates();
+      updateDisplay();
+      updateWorkspaceLayout();
+    }
+
+    function hideAnswer() {
+      answerVisible = false;
+      display.classList.add("hidden");
+      wordDisplay.classList.add("hidden");
+      speakBtn.disabled = true;
+      updateAdditionButtonStates();
+      updateWorkspaceLayout();
+    }
+
+    function updateWorkspaceLayout() {
+      closeFormulaIfNeeded();
+      updateAdditionTotalView();
+
+      if (currentMode === "addition" && (additionBuilt || additionPracticeBuilt || additionFreeBuilt)) {
+        if (additionFreeBuilt) syncAdditionNumbersFromBlocks();
+        categoryLayer.classList.add("hidden");
+        additionLayer.classList.remove("hidden");
+        arrangeBlocksForAddition();
+      } else if (currentMode === "free" && answerVisible) {
+        additionLayer.classList.add("hidden");
+        categoryLayer.classList.remove("hidden");
+        arrangeBlocksByCategory();
+      } else {
+        categoryLayer.classList.add("hidden");
+        additionLayer.classList.add("hidden");
+        arrangeBlocksInWorkspace();
+      }
+    }
+
+    function closeFormulaIfNeeded() {
+      if (!(currentMode === "addition" && (additionBuilt || additionPracticeBuilt || additionFreeBuilt))) closeFormulaModal();
+    }
+
+    function getBlockRectAt(block, left, top) {
+      return { left, top, right: left + block.offsetWidth, bottom: top + block.offsetHeight };
+    }
+
+    function getCurrentBlockRect(block) {
+      const left = parseFloat(block.style.left) || 0;
+      const top = parseFloat(block.style.top) || 0;
+      return getBlockRectAt(block, left, top);
+    }
+
+    function rectanglesOverlap(a, b, gap = 6) {
+      return !(a.right + gap <= b.left || a.left >= b.right + gap || a.bottom + gap <= b.top || a.top >= b.bottom + gap);
+    }
+
+    function hasOverlap(block, left, top) {
+      const rect = getBlockRectAt(block, left, top);
+      return placedBlocks.some(other => other !== block && other.dataset.group !== "T" && rectanglesOverlap(rect, getCurrentBlockRect(other)));
+    }
+
+    function findFreePosition(block, wantedLeft, wantedTop) {
+      const maxX = Math.max(0, workspace.clientWidth - block.offsetWidth);
+      const maxY = Math.max(0, workspace.clientHeight - block.offsetHeight);
+      const startLeft = clamp(wantedLeft, 0, maxX);
+      const startTop = clamp(wantedTop, 0, maxY);
+      if (!hasOverlap(block, startLeft, startTop)) return { left: startLeft, top: startTop };
+
+      const step = 16;
+      let best = null;
+      let bestDistance = Infinity;
+      for (let top = 0; top <= maxY; top += step) {
+        for (let left = 0; left <= maxX; left += step) {
+          if (hasOverlap(block, left, top)) continue;
+          const distance = Math.hypot(left - startLeft, top - startTop);
+          if (distance < bestDistance) {
+            bestDistance = distance;
+            best = { left, top };
+          }
+        }
+      }
+      return best || { left: startLeft, top: startTop };
+    }
+
+    function isMobileView() {
+      return window.matchMedia("(max-width: 700px)").matches;
+    }
+
+    function getOriginalBlockSize(type) {
+      const sizeSet = blockOriginalSize[type];
+      return isMobileView() ? sizeSet.mobile : sizeSet.pc;
+    }
+
+    function setBlockSize(block, width, height) {
+      block.style.width = width + "px";
+      block.style.height = height + "px";
+    }
+
+    function setBlockOriginalSize(block) {
+      const [width, height] = getOriginalBlockSize(block.dataset.type);
+      setBlockSize(block, width, height);
+    }
+
+    function fitBlocksInArea(blocks, areaWidth, areaHeight) {
+      if (!blocks.length) return null;
+      const gap = 10;
+      let best = null;
+      for (let cols = 1; cols <= blocks.length; cols++) {
+        const rows = Math.ceil(blocks.length / cols);
+        const maxCellWidth = (areaWidth - gap * (cols - 1)) / cols;
+        const maxCellHeight = (areaHeight - gap * (rows - 1)) / rows;
+        if (maxCellWidth <= 0 || maxCellHeight <= 0) continue;
+        let scale = 1;
+        blocks.forEach(block => {
+          const [ow, oh] = getOriginalBlockSize(block.dataset.type);
+          scale = Math.min(scale, maxCellWidth / ow, maxCellHeight / oh);
+        });
+        if (scale <= 0) continue;
+        const totalArea = blocks.reduce((sum, block) => {
+          const [ow, oh] = getOriginalBlockSize(block.dataset.type);
+          return sum + Math.floor(ow * scale) * Math.floor(oh * scale);
+        }, 0);
+        if (!best || totalArea > best.totalArea) best = { cols, rows, scale, gap, totalArea };
+      }
+      return best || { cols: 1, rows: blocks.length, scale: 0.4, gap };
+    }
+
+    function arrangeBlocksInWorkspace() {
+      requestAnimationFrame(() => {
+        if (currentMode === "addition" && additionBuilt) return;
+        if (answerVisible && currentMode === "free") return;
+        const blocks = [...placedBlocks];
+        if (!blocks.length) return;
+        const padding = 28;
+        const areaLeft = padding;
+        const areaTop = padding;
+        const areaWidth = Math.max(40, workspace.clientWidth - padding * 2);
+        const areaHeight = Math.max(40, workspace.clientHeight - padding * 2 - 38);
+        const fit = fitBlocksInArea(blocks, areaWidth, areaHeight);
+        if (!fit) return;
+        const cellWidth = (areaWidth - fit.gap * (fit.cols - 1)) / fit.cols;
+        const cellHeight = (areaHeight - fit.gap * (fit.rows - 1)) / fit.rows;
+        blocks.forEach((block, index) => {
+          const [ow, oh] = getOriginalBlockSize(block.dataset.type);
+          const bw = Math.max(16, Math.floor(ow * fit.scale));
+          const bh = Math.max(16, Math.floor(oh * fit.scale));
+          setBlockSize(block, bw, bh);
+          const col = index % fit.cols;
+          const row = Math.floor(index / fit.cols);
+          const left = areaLeft + col * (cellWidth + fit.gap) + Math.max(0, (cellWidth - bw) / 2);
+          const top = areaTop + row * (cellHeight + fit.gap) + Math.max(0, (cellHeight - bh) / 2);
+          block.style.left = clamp(left, 0, workspace.clientWidth - bw) + "px";
+          block.style.top = clamp(top, 0, workspace.clientHeight - bh) + "px";
+        });
+      });
+    }
+
+    function fitBlocksInBox(blocks, boxWidth, boxHeight) {
+      if (!blocks.length) return null;
+
+      const type = blocks[0].dataset.type;
+      const [originalWidth, originalHeight] = getOriginalBlockSize(type);
+
+      // Allow much smaller blocks when the number is large.
+      // This prevents 50+ thousand blocks from overflowing outside the category box.
+      const gap = blocks.length > 30 ? 3 : blocks.length > 16 ? 4 : 8;
+      const minBlockSize = 6;
+
+      let best = null;
+
+      for (let cols = 1; cols <= blocks.length; cols++) {
+        const rows = Math.ceil(blocks.length / cols);
+
+        const availableWidth = boxWidth - gap * (cols - 1);
+        const availableHeight = boxHeight - gap * (rows - 1);
+        if (availableWidth <= 0 || availableHeight <= 0) continue;
+
+        const widthScale = availableWidth / (originalWidth * cols);
+        const heightScale = availableHeight / (originalHeight * rows);
+        const scale = Math.min(1, widthScale, heightScale);
+
+        if (scale <= 0) continue;
+
+        const blockWidth = Math.max(minBlockSize, Math.floor(originalWidth * scale));
+        const blockHeight = Math.max(minBlockSize, Math.floor(originalHeight * scale));
+
+        // Confirm this option really fits after minimum size is applied.
+        if (blockWidth * cols + gap * (cols - 1) > boxWidth) continue;
+        if (blockHeight * rows + gap * (rows - 1) > boxHeight) continue;
+
+        const totalArea = blockWidth * blockHeight;
+
+        if (!best || totalArea > best.totalArea) {
+          best = { cols, rows, blockWidth, blockHeight, totalArea, gap };
+        }
+      }
+
+      if (best) return best;
+
+      // Last fallback: make the blocks very small but still visible.
+      const cols = Math.ceil(Math.sqrt(blocks.length));
+      const rows = Math.ceil(blocks.length / cols);
+      const gapSmall = 2;
+      return {
+        cols,
+        rows,
+        blockWidth: Math.max(minBlockSize, Math.floor((boxWidth - gapSmall * (cols - 1)) / cols)),
+        blockHeight: Math.max(minBlockSize, Math.floor((boxHeight - gapSmall * (rows - 1)) / rows)),
+        totalArea: 1,
+        gap: gapSmall
+      };
+    }
+
+    function arrangeBlocksByCategory() {
+      requestAnimationFrame(() => {
+        if (!(currentMode === "free" && answerVisible)) return;
+        updateCategoryLabels();
+        const workspaceRect = workspace.getBoundingClientRect();
+        categoryBoxes.forEach(box => {
+          const type = box.dataset.category;
+          const blocks = placedBlocks.filter(block => block.dataset.type === type);
+          const boxRect = box.getBoundingClientRect();
+          const padding = 10;
+          const titleSpace = 34;
+          const areaLeft = boxRect.left - workspaceRect.left + padding;
+          const areaTop = boxRect.top - workspaceRect.top + titleSpace;
+          const areaWidth = Math.max(20, boxRect.width - padding * 2);
+          const areaHeight = Math.max(20, boxRect.height - titleSpace - padding);
+          const fit = fitBlocksInBox(blocks, areaWidth, areaHeight);
+          if (!fit) return;
+          blocks.forEach((block, index) => {
+            setBlockSize(block, fit.blockWidth, fit.blockHeight);
+            const col = index % fit.cols;
+            const row = Math.floor(index / fit.cols);
+            const left = areaLeft + col * (fit.blockWidth + fit.gap);
+            const top = areaTop + row * (fit.blockHeight + fit.gap);
+            block.style.left = clamp(left, 0, workspace.clientWidth - fit.blockWidth) + "px";
+            block.style.top = clamp(top, 0, workspace.clientHeight - fit.blockHeight) + "px";
+          });
+        });
+      });
+    }
+
+    function arrangeBlocksForAddition() {
+      requestAnimationFrame(() => {
+        if (!(currentMode === "addition" && (additionBuilt || additionPracticeBuilt || additionFreeBuilt))) return;
+
+        updateAdditionLabels();
+        updateCategoryLabels();
+
+        const workspaceRect = workspace.getBoundingClientRect();
+
+        additionBoxes.forEach(box => {
+          const group = box.dataset.group;
+          const type = box.dataset.category;
+          const blocks = placedBlocks.filter(block => {
+            if (block.dataset.group !== group) return false;
+            const displayCategory = additionPracticeBuilt ? (block.dataset.placeCategory || block.dataset.type) : block.dataset.type;
+            return displayCategory === type;
+          });
+          const boxRect = box.getBoundingClientRect();
+
+          const padding = 8;
+          const titleSpace = 30;
+
+          const areaLeft = boxRect.left - workspaceRect.left + padding;
+          const areaTop = boxRect.top - workspaceRect.top + titleSpace;
+          const areaWidth = Math.max(20, boxRect.width - padding * 2);
+          const areaHeight = Math.max(20, boxRect.height - titleSpace - padding);
+
+          const fit = fitBlocksInBox(blocks, areaWidth, areaHeight);
+          if (!fit) return;
+
+          blocks.forEach((block, index) => {
+            setBlockSize(block, fit.blockWidth, fit.blockHeight);
+
+            const col = index % fit.cols;
+            const row = Math.floor(index / fit.cols);
+
+            const left = areaLeft + col * (fit.blockWidth + fit.gap);
+            const top = areaTop + row * (fit.blockHeight + fit.gap);
+
+            block.style.left = clamp(left, 0, workspace.clientWidth - fit.blockWidth) + "px";
+            block.style.top = clamp(top, 0, workspace.clientHeight - fit.blockHeight) + "px";
+          });
+        });
+      });
+    }
+
+    function clamp(value, min, max) { return Math.max(min, Math.min(max, value)); }
+
+    function numberToEnglish(n) {
+      if (n === 0) return "zero";
+      const ones = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"];
+      const tens = ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"];
+      function under100(num) {
+        if (num < 20) return ones[num];
+        const t = Math.floor(num / 10), o = num % 10;
+        return tens[t] + (o ? " " + ones[o] : "");
+      }
+      function under1000(num) {
+        if (num < 100) return under100(num);
+        const h = Math.floor(num / 100), rest = num % 100;
+        return ones[h] + " hundred" + (rest ? " " + under100(rest) : "");
+      }
+      if (n >= 1000) {
+        const high = Math.floor(n / 1000), rest = n % 1000;
+        return numberToEnglish(high) + " thousand" + (rest ? " " + under1000(rest) : "");
+      }
+      return under1000(n);
+    }
+
+    function numberToMalay(n) {
+      if (n === 0) return "sifar";
+      const ones = ["sifar", "satu", "dua", "tiga", "empat", "lima", "enam", "tujuh", "lapan", "sembilan"];
+      function under100(num) {
+        if (num < 10) return ones[num];
+        if (num === 10) return "sepuluh";
+        if (num === 11) return "sebelas";
+        if (num < 20) return ones[num - 10] + " belas";
+        const puluh = Math.floor(num / 10), sa = num % 10;
+        return ones[puluh] + " puluh" + (sa ? " " + ones[sa] : "");
+      }
+      function under1000(num) {
+        if (num < 100) return under100(num);
+        const ratus = Math.floor(num / 100), baki = num % 100;
+        let text = ones[ratus] + " ratus";
+        if (baki > 0) text += " " + under100(baki);
+        return text;
+      }
+      function underMillion(num) {
+        if (num < 1000) return under1000(num);
+        const ribu = Math.floor(num / 1000), baki = num % 1000;
+        let text = under1000(ribu) + " ribu";
+        if (baki > 0) text += " " + under1000(baki);
+        return text;
+      }
+      return underMillion(n);
+    }
+
+    function numberToChinese(n) {
+      if (n === 0) return "零";
+      const digit = ["零", "一", "二", "三", "四", "五", "六", "七", "八", "九"];
+      function sectionToChinese(num) {
+        const values = [1000, 100, 10, 1];
+        const units = ["千", "百", "十", ""];
+        let text = "", zeroPending = false;
+        for (let i = 0; i < values.length; i++) {
+          const value = values[i];
+          const d = Math.floor(num / value) % 10;
+          const hasLower = num % value !== 0;
+          if (d === 0) {
+            if (text !== "" && hasLower) zeroPending = true;
+            continue;
+          }
+          if (zeroPending) { text += "零"; zeroPending = false; }
+          if (value === 10 && d === 1 && text === "") text += "十";
+          else text += digit[d] + units[i];
+        }
+        return text;
+      }
+      if (n < 10000) return sectionToChinese(n);
+      const wan = Math.floor(n / 10000);
+      const rest = n % 10000;
+      let text = sectionToChinese(wan) + "万";
+      if (rest > 0) {
+        if (rest < 1000) text += "零";
+        text += sectionToChinese(rest);
+      }
+      return text;
+    }
+
+    function getExpectedCounts(number) {
+      let remaining = Math.max(0, Math.floor(number));
+      const counts = {
+        thousand: Math.floor(remaining / 1000),
+        hundred: 0,
+        ten: 0,
+        one: 0
+      };
+
+      remaining %= 1000;
+      counts.hundred = Math.floor(remaining / 100);
+      remaining %= 100;
+      counts.ten = Math.floor(remaining / 10);
+      counts.one = remaining % 10;
+
+      return counts;
+    }
+
+    function isPracticeAnswerCorrect() {
+      const expectedByGroup = {
+        A: getExpectedCounts(additionNumbers.a),
+        B: getExpectedCounts(additionNumbers.b)
+      };
+
+      const actualByGroup = {
+        A: { thousand: 0, hundred: 0, ten: 0, one: 0 },
+        B: { thousand: 0, hundred: 0, ten: 0, one: 0 }
+      };
+
+      let hasWrongPlacement = false;
+
+      placedBlocks.forEach(block => {
+        const group = block.dataset.group;
+        const placeCategory = block.dataset.placeCategory;
+        const type = block.dataset.type;
+
+        if (!actualByGroup[group] || !(placeCategory in actualByGroup[group])) {
+          hasWrongPlacement = true;
+          return;
+        }
+
+        if (type !== placeCategory) {
+          hasWrongPlacement = true;
+        }
+
+        actualByGroup[group][placeCategory]++;
+      });
+
+      if (hasWrongPlacement) return false;
+
+      return ["A", "B"].every(group => {
+        return ["thousand", "hundred", "ten", "one"].every(category => {
+          return actualByGroup[group][category] === expectedByGroup[group][category];
+        });
+      });
+    }
+
+    function clearPracticeBlocksOnly() {
+      placedBlocks.splice(0).forEach(block => block.remove());
+      total = 0;
+      answerVisible = false;
+      updateDisplay();
+      updateWorkspaceLayout();
+    }
+
+    function clearPracticeBlocksButton() {
+      if (!(currentMode === "addition" && (additionPracticeBuilt || additionFreeBuilt))) return;
+      clearInputError();
+      clearPracticeBlocksOnly();
+
+      if (additionPracticeBuilt) {
+        practiceAddBtn.classList.add("selected");
+        additionBuilt = false;
+        additionFreeBuilt = false;
+        additionPracticeBuilt = true;
+      } else {
+        practiceAddBtn.classList.remove("selected");
+        additionBuilt = false;
+        additionPracticeBuilt = false;
+        additionFreeBuilt = true;
+        additionNumbers = { a: 0, b: 0 };
+      }
+
+      updateAdditionLabels();
+      updateFormulaView();
+      updateAdditionButtonStates();
+      updateWorkspaceLayout();
+    }
+
+    function checkPracticeAnswer() {
+      if (!(currentMode === "addition" && additionPracticeBuilt)) return;
+
+      if (isPracticeAnswerCorrect()) {
+        showInputError("correct");
+        return;
+      }
+
+      clearPracticeBlocksOnly();
+      showInputError("tryAgain");
+      practiceAddBtn.classList.add("selected");
+      additionBuilt = false;
+      additionFreeBuilt = false;
+      additionPracticeBuilt = true;
+      updateAdditionLabels();
+      updateAdditionButtonStates();
+      updateWorkspaceLayout();
+    }
+
+    function handleAnswerClick() {
+      clearInputError();
+
+      if (currentMode === "addition" && additionFreeBuilt) {
+        syncAdditionNumbersFromBlocks();
+        updateFormulaView();
+        showAnswer();
+        updateAdditionButtonStates();
+        return;
+      }
+
+      if (currentMode === "addition" && additionPracticeBuilt) {
+        practiceAddBtn.classList.remove("selected");
+        additionPracticeBuilt = false;
+        additionFreeBuilt = false;
+        additionBuilt = true;
+        buildBlocksFromNumbers([additionNumbers.a, additionNumbers.b], ["A", "B"]);
+        updateAdditionButtonStates();
+        showAnswer();
+        return;
+      }
+
+      showAnswer();
+    }
+
+    resetBtn.addEventListener("click", reset);
+    resetBtn.addEventListener("pointerdown", e => e.stopPropagation());
+    answerBtn.addEventListener("click", handleAnswerClick);
+    answerBtn.addEventListener("pointerdown", e => e.stopPropagation());
+    formulaBtn.addEventListener("pointerdown", e => e.stopPropagation());
+
+    const bmCommonAudioWords = ["sifar", "satu", "dua", "tiga", "empat", "lima", "enam", "tujuh", "lapan", "sembilan", "sepuluh", "sebelas", "belas", "puluh", "ratus", "ribu", "juta"];
+    const bmAudioUrlCache = new Map();
+
+    function getBmAudioCandidatePaths(name) {
+      const forms = makeMalayFileNameVariants(name, true);
+      const extensions = [".MP3", ".mp3", ".Mp3"];
+      const paths = [];
+      for (const form of forms) for (const ext of extensions) paths.push(`assets/audio/bm/${form}${ext}`);
+      return paths;
+    }
+
+    function preloadMalayAudio() {
+      bmCommonAudioWords.forEach(word => {
+        getBmAudioCandidatePaths(word).forEach(src => {
+          const audio = new Audio();
+          audio.preload = "auto";
+          audio.src = src;
+          audio.load();
+        });
+      });
+    }
+
+    window.addEventListener("load", () => { setTimeout(preloadMalayAudio, 300); }, { once: true });
+    document.addEventListener("pointerdown", () => { preloadMalayAudio(); }, { once: true });
+    speakBtn.addEventListener("click", speakCurrentAnswer);
+
+    async function speakCurrentAnswer() {
+      if (!answerVisible) return;
+      const text = languageData[currentLang].words(total);
+      if (!text) return;
+      if (currentLang === "bm") {
+        window.speechSynthesis?.cancel();
+        await playMalayMp3Sequence(text);
+        return;
+      }
+      if (!("speechSynthesis" in window)) return;
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = languageData[currentLang].speechLang;
+      utterance.voice = getPreferredVoice(currentLang);
+      if (currentLang === "zh") { utterance.rate = 0.85; utterance.pitch = 1.05; }
+      else { utterance.rate = 0.88; utterance.pitch = 1.05; }
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function stopAllAudio() {
+      bmAudioToken++;
+      if (currentAudio) { currentAudio.pause(); currentAudio.currentTime = 0; }
+      window.speechSynthesis?.cancel();
+    }
+
+    async function playMalayMp3Sequence(text) {
+      bmAudioToken++;
+      const token = bmAudioToken;
+      if (currentAudio) { currentAudio.pause(); currentAudio.currentTime = 0; }
+      const chunks = makeMalayAudioChunks(text);
+      for (const chunk of chunks) {
+        if (token !== bmAudioToken) return;
+        await playMalayChunkMp3(chunk, token);
+        await wait(0);
+      }
+    }
+
+    function makeMalayAudioChunks(text) {
+      const rawWords = text.trim().toLowerCase().split(/\s+/).filter(Boolean);
+      const chunks = [];
+      for (const word of rawWords) {
+        if (word === "seratus") { chunks.push("satu", "ratus"); continue; }
+        if (word === "seribu") { chunks.push("satu", "ribu"); continue; }
+        if (word === "sejuta") { chunks.push("satu", "juta"); continue; }
+        chunks.push(word);
+      }
+      return chunks;
+    }
+
+    async function playMalayChunkMp3(chunk, token) {
+      const phraseOk = await playMalayFileMp3(chunk, token, true);
+      if (phraseOk) return true;
+      if (chunk.includes(" ")) {
+        let anyOk = false;
+        const parts = chunk.split(/\s+/).filter(Boolean);
+        for (const part of parts) {
+          if (token !== bmAudioToken) return false;
+          const ok = await playMalayFileMp3(part, token, false);
+          anyOk = anyOk || ok;
+          await wait(0);
+        }
+        return anyOk;
+      }
+      return false;
+    }
+
+    async function playMalayFileMp3(name, token, allowPhraseVariants) {
+      const forms = makeMalayFileNameVariants(name, allowPhraseVariants);
+      const extensions = [".MP3", ".mp3", ".Mp3"];
+      for (const form of forms) {
+        for (const ext of extensions) {
+          const src = `assets/audio/bm/${form}${ext}`;
+          if (bmAudioUrlCache.get(name) === src) {
+            const ok = await playOneMp3(src, token);
+            if (ok) return true;
+          }
+          const ok = await playOneMp3(src, token);
+          if (ok) { bmAudioUrlCache.set(name, src); return true; }
+        }
+      }
+      console.warn("Missing BM audio file:", name);
+      return false;
+    }
+
+    function makeMalayFileNameVariants(name, allowPhraseVariants) {
+      const clean = name.trim().toLowerCase().replace(/\s+/g, " ");
+      const variants = [clean];
+      if (allowPhraseVariants && clean.includes(" ")) variants.push(clean.replace(/\s+/g, "_"), clean.replace(/\s+/g, "-"), clean.replace(/\s+/g, ""));
+      return [...new Set(variants)];
+    }
+
+    function playOneMp3(src, token) {
+      return new Promise(resolve => {
+        if (token !== bmAudioToken) return resolve(false);
+        const audio = new Audio(src);
+        currentAudio = audio;
+        audio.playbackRate = 1.18;
+        audio.onended = () => resolve(true);
+        audio.onerror = () => resolve(false);
+        audio.play().catch(() => resolve(false));
+      });
+    }
+
+    function wait(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+
+    function getPreferredVoice(lang) {
+      const voices = window.speechSynthesis.getVoices();
+      const femaleKeywords = ["female", "woman", "girl", "zira", "aria", "jenny", "samantha", "victoria", "susan", "karen", "moira", "tessa"];
+      const soundsFemale = voice => femaleKeywords.some(keyword => voice.name.toLowerCase().includes(keyword));
+      const byLang = code => voices.filter(v => v.lang.toLowerCase() === code.toLowerCase());
+      const byLangPrefix = prefix => voices.filter(v => v.lang.toLowerCase().startsWith(prefix.toLowerCase()));
+      const chooseFemale = list => list.find(soundsFemale) || list[0] || null;
+      if (lang === "en") return chooseFemale(byLang("en-US").concat(byLang("en-GB")).concat(byLangPrefix("en")));
+      if (lang === "zh") {
+        const list = byLang("zh-CN").concat(byLang("zh-TW")).concat(byLang("zh-HK")).concat(byLangPrefix("zh"));
+        return list[0] || null;
+      }
+      return null;
+    }
+
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
+    }
+
+    window.addEventListener("resize", () => updateWorkspaceLayout());
+
+    updateInputLabels();
+    setMode("free");
+    updateCategoryLabels();
+    updateAdditionLabels();
+    updateFormulaView();
+    setLanguage("en");
+      // Practice mode updated: Practice button highlights, Check validates after students finish, wrong answer clears blocks but keeps same question.
+      // Practice drop rule fixed: 1000/100/10/1 can only be dropped into their matching place-value boxes; Check count bug fixed.
+      // Addition UI enhanced: question line added; Formula/Check/Clear buttons enable only when useful; Clear keeps the same Practice question.
+      // Clear button renamed to Clear Blocks / 清空方块 / Kosongkan Blok.
+      // Answer button now clears Practice error messages before showing the answer.
+      // Language buttons replaced with a dropdown: English / Chinese / Malay.
+      // Answer and sound buttons moved below the displayed answer.
+      // Sound button is disabled until the answer is visible; BM reset label changed to Mula Semula.
+      // Addition Answer now shows a third Total/Jumlah row with the answer blocks.
+      // Unified addition display: row values use sign+number pills; formula content is centered with the same sign column idea.
+      // Addition free exploration: selecting + immediately shows Number 1 / Number 2 rows, lets students drag blocks without a question, and Answer shows Total blocks.
+      // Formula stays disabled in all addition modes until Answer is pressed; any new key-in, drag, Practice, or Clear hides the answer and disables Formula again.
+  </script>
+</body>
+</html>
