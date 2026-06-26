@@ -614,10 +614,18 @@
     }
 
     @media (max-width: 700px) {
+      body {
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+
       .tool {
         width: 100vw;
+        min-height: 100dvh;
+        height: auto;
         padding: 8px;
         gap: 8px;
+        overflow: visible;
       }
 
       .top-panel {
@@ -666,6 +674,8 @@
       .input-error { font-size: 12px; min-height: 16px; }
 
       .main-area {
+        flex: 0 0 auto;
+        min-height: auto;
         display: flex;
         flex-direction: column-reverse;
         gap: 8px;
@@ -686,7 +696,22 @@
       .source-card { min-width: 78px; height: 94px; font-size: 15px; padding: 6px; }
       .source-img { width: 54px; height: 54px; }
 
-      .workspace { flex: 1; min-height: 310px; }
+      .workspace {
+        flex: 0 0 auto;
+        min-height: 520px;
+        height: 520px;
+      }
+
+      .workspace.show-addition-area {
+        min-height: 590px;
+        height: 590px;
+      }
+
+      .workspace.show-addition-total {
+        min-height: 720px;
+        height: 720px;
+      }
+
       .workspace-reset { right: 10px; bottom: 10px; font-size: 13px; padding: 7px 12px; }
 
       .category-layer {
@@ -701,8 +726,16 @@
         gap: 8px;
       }
 
+      .addition-layer.show-total {
+        gap: 8px;
+      }
+
       .add-group {
-        padding: 50px 8px 8px;
+        padding: 42px 8px 8px;
+      }
+
+      .addition-layer.show-total .add-group {
+        padding-top: 42px;
       }
 
       .add-group-head {
@@ -712,7 +745,10 @@
       }
 
       .add-group-label { font-size: 12px; padding: 3px 8px; }
-      .add-group-value { font-size: 16px; padding: 3px 8px; }
+      .add-group-value { font-size: 16px; padding: 3px 8px; min-width: 70px; }
+
+      .addition-layer.show-total .add-group-label { font-size: 12px; padding: 3px 8px; }
+      .addition-layer.show-total .add-group-value { font-size: 16px; padding: 3px 8px; min-width: 70px; }
 
       .add-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -1112,11 +1148,15 @@
       questionLine.classList.toggle("hidden", !hasQuestion);
     }
 
+    function hasStudentBlocksInWorkspace() {
+      return placedBlocks.some(block => block.dataset.group !== "T");
+    }
+
     function updateAdditionButtonStates() {
       const isAdditionMode = currentMode === "addition";
       const isPractice = isAdditionMode && additionPracticeBuilt;
       const hasAdditionWork = isAdditionMode && (additionBuilt || additionPracticeBuilt || additionFreeBuilt);
-      const canClearStudentBlocks = isAdditionMode && (additionPracticeBuilt || additionFreeBuilt);
+      const canClearStudentBlocks = isAdditionMode && hasStudentBlocksInWorkspace();
 
       // Formula is only available after Answer is pressed.
       // If the user keys in again, enters Practice again, drags more blocks, or clears blocks,
@@ -1126,7 +1166,7 @@
       formulaBtn.disabled = !formulaReady;
       checkPracticeBtn.disabled = !isPractice;
       clearPracticeBtn.disabled = !canClearStudentBlocks;
-      resetBtn.style.display = canClearStudentBlocks ? "none" : "inline-flex";
+      resetBtn.style.display = isAdditionMode ? "none" : "inline-flex";
     }
 
     function getGroupBlockTotal(group) {
@@ -1252,6 +1292,12 @@
 
       if (mode === "free") {
         clearTotalAnswerBlocks();
+
+        if (modeChanged && !preserveBlocks) {
+          placedBlocks.splice(0).forEach(block => block.remove());
+          total = 0;
+        }
+
         additionBuilt = false;
         additionPracticeBuilt = false;
         additionFreeBuilt = false;
@@ -1394,9 +1440,12 @@
       const showTotal = currentMode === "addition" && (additionBuilt || additionFreeBuilt) && answerVisible;
       totalAnswerGroup.classList.toggle("hidden", !showTotal);
       additionLayer.classList.toggle("show-total", showTotal);
+      workspace.classList.toggle("show-addition-total", showTotal);
 
       if (showTotal) createTotalAnswerBlocks();
       else clearTotalAnswerBlocks();
+
+      updateAdditionButtonStates();
     }
 
     function buildBlocksFromNumbers(numbers, groups = []) {
@@ -1699,6 +1748,13 @@
       updateAdditionButtonStates();
       updateDisplay();
       updateWorkspaceLayout();
+
+      if (currentMode === "addition") {
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          updateWorkspaceLayout();
+          arrangeBlocksForAddition();
+        }));
+      }
     }
 
     function hideAnswer() {
@@ -1712,9 +1768,14 @@
 
     function updateWorkspaceLayout() {
       closeFormulaIfNeeded();
+
+      const usingAdditionArea = currentMode === "addition" && (additionBuilt || additionPracticeBuilt || additionFreeBuilt);
+      workspace.classList.toggle("show-addition-area", usingAdditionArea);
+      if (!usingAdditionArea) workspace.classList.remove("show-addition-total");
+
       updateAdditionTotalView();
 
-      if (currentMode === "addition" && (additionBuilt || additionPracticeBuilt || additionFreeBuilt)) {
+      if (usingAdditionArea) {
         if (additionFreeBuilt) syncAdditionNumbersFromBlocks();
         categoryLayer.classList.add("hidden");
         additionLayer.classList.remove("hidden");
@@ -1857,8 +1918,11 @@
 
       // Allow much smaller blocks when the number is large.
       // This prevents 50+ thousand blocks from overflowing outside the category box.
-      const gap = blocks.length > 30 ? 3 : blocks.length > 16 ? 4 : 8;
-      const minBlockSize = 6;
+      const isMobile = window.matchMedia("(max-width: 700px)").matches;
+      const gap = isMobile
+        ? (blocks.length > 30 ? 2 : blocks.length > 16 ? 3 : 4)
+        : (blocks.length > 30 ? 3 : blocks.length > 16 ? 4 : 8);
+      const minBlockSize = isMobile ? 5 : 6;
 
       let best = null;
 
@@ -1954,8 +2018,9 @@
           });
           const boxRect = box.getBoundingClientRect();
 
-          const padding = 8;
-          const titleSpace = 30;
+          const isMobile = window.matchMedia("(max-width: 700px)").matches;
+          const padding = isMobile ? 5 : 8;
+          const titleSpace = isMobile ? 22 : 30;
 
           const areaLeft = boxRect.left - workspaceRect.left + padding;
           const areaTop = boxRect.top - workspaceRect.top + titleSpace;
@@ -2130,7 +2195,7 @@
     }
 
     function clearPracticeBlocksButton() {
-      if (!(currentMode === "addition" && (additionPracticeBuilt || additionFreeBuilt))) return;
+      if (!(currentMode === "addition" && hasStudentBlocksInWorkspace())) return;
       clearInputError();
       clearPracticeBlocksOnly();
 
@@ -2353,7 +2418,11 @@
       window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
     }
 
-    window.addEventListener("resize", () => updateWorkspaceLayout());
+    let resizeReflowTimer = null;
+    window.addEventListener("resize", () => {
+      clearTimeout(resizeReflowTimer);
+      resizeReflowTimer = setTimeout(updateWorkspaceLayout, 80);
+    });
 
     updateInputLabels();
     setMode("free");
@@ -2373,6 +2442,9 @@
       // Unified addition display: row values use sign+number pills; formula content is centered with the same sign column idea.
       // Addition free exploration: selecting + immediately shows Number 1 / Number 2 rows, lets students drag blocks without a question, and Answer shows Total blocks.
       // Formula stays disabled in all addition modes until Answer is pressed; any new key-in, drag, Practice, or Clear hides the answer and disables Formula again.
+      // Mobile addition layout uses page scrolling and a taller workspace so Number 1 / Number 2 / Total do not get squeezed; Reset is hidden in all addition modes.
+      // Clear Blocks is enabled whenever addition has visible student blocks, including normal Blocks mode.
+      // Manually switching from + back to Free clears all addition blocks automatically.
   </script>
 </body>
 </html>
